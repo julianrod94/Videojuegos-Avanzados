@@ -7,16 +7,20 @@ public class Bitbuffer {
 
     private int currentBitCount;
 
-    private MemoryStream buffer;
+    private MemoryStream buffer = new MemoryStream();
 
-    public void WriteBit(bool value) {
+    public void WriteBool(bool value) {
+        WriteBit(value);
+    }
+
+    private void WriteBit(bool value) {
         long longValue = value ? 1L : 0L;
         bits |= longValue << currentBitCount;
         currentBitCount++;
         WriteIfNecessary();
     }
 
-    public void WriteBits(long value, int bitCount) {
+    private void WriteBits(long value, int bitCount) {
         bits |= value << currentBitCount;
         currentBitCount+=bitCount;
         WriteIfNecessary();
@@ -25,8 +29,8 @@ public class Bitbuffer {
     public void WriteInt(int value, int min, int max) {
         if(min>=max) throw new ArgumentException("min should be lower than max");
         if(value > max || value < min) throw new ArgumentException("Value must be between min and max");
-        int bits = Mathf.CeilToInt(Mathf.Log(max-min, 2));
-        WriteBits(value, bits);
+        int bits = Mathf.CeilToInt(Mathf.Log(max-min+1, 2));
+        WriteBits(value - min, bits);
     }
 
     public void WriteFloat(float value, float min, float max, float step) {
@@ -40,7 +44,7 @@ public class Bitbuffer {
         if((maxDecimal/step)%1 != 0) throw new ArgumentException("Max must be divisible by step"); 
         if((value/step)%1 != 0) throw new ArgumentException("Value must be divisible by step"); 
         
-        int bits = Mathf.CeilToInt(Mathf.Log((max-min)/step, 2));
+        int bits = Mathf.CeilToInt(Mathf.Log((max-min + 1)/step, 2));
         int countedValue = Mathf.FloorToInt((value - min) / step);
         WriteBits(countedValue, bits);
     }
@@ -67,12 +71,9 @@ public class Bitbuffer {
             loadInt();
         }
         currentBitCount--;
-//        creo que esto esta mal
-//        bool answer = (bits & 1) == 1;
-//        bits >>= 1;
-//        return answer;
-        byte word = 1;
-        return (byte) (bits << 7) == word << 7;
+        bool answer = (bits & 1) == 1;
+        bits >>= 1;
+        return answer;
     }
     
     public long ReadBits(int bitCount) {
@@ -80,16 +81,15 @@ public class Bitbuffer {
             loadInt();
         }
         currentBitCount -= bitCount;
-        long word = 0;
-        word =  bits << 64 - bitCount;
-        word >>= 64 - bitCount;
+        long word =  bits & ~(1<<bitCount);
+        bits >>= bitCount;
         return word;
     }
 
     public int ReadInt(int min, int max) {
         if(min>=max) throw new ArgumentException("min should be lower than max");
-        int intSize = Mathf.CeilToInt(Mathf.Log(max - min, 2));
-        return (int) ReadBits(intSize);
+        int intSize = Mathf.CeilToInt(Mathf.Log(max - min + 1, 2));
+        return (int) ReadBits(intSize) + min;
     }
 
     public float ReadFloat(float min, float max, float step) {
