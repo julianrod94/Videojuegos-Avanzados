@@ -6,7 +6,7 @@ using System.Collections;
 
 public class BitbufferTest {
 
-    private int[] numbers = new[] { 2, 4 };
+    private int[] numbers = { 2, 4 };
 
     [Test]
     public void SendBoolTest() {
@@ -35,6 +35,20 @@ public class BitbufferTest {
         }      
         for (int i = 0; i < numbers.Length; i++) {
             Assert.AreEqual(numbers[i], bitbuffer.ReadInt(0, 5));
+        }
+    }
+    
+    [Test]
+    public void SendIntsInSucesionnegative() {
+        Bitbuffer bitbuffer = new Bitbuffer();
+        for (int i = -20; i < 20; i++) {
+            bitbuffer.WriteInt(i, -20, 20);
+        }
+        
+        bitbuffer.flush();
+        bitbuffer.toRead();
+        for (int i = -20; i < 20; i++) {
+            Assert.AreEqual(i, bitbuffer.ReadInt(-20, 20));
         }
     }
 

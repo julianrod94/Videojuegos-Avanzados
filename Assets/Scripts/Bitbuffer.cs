@@ -1,27 +1,30 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class Bitbuffer {
-    private long bits;
+    private ulong bits;
 
     private int currentBitCount;
 
-    private MemoryStream buffer = new MemoryStream();
+    private MemoryStream buffer = new MemoryStream(10000000);
 
     public void WriteBool(bool value) {
         WriteBit(value);
     }
 
     private void WriteBit(bool value) {
-        long longValue = value ? 1L : 0L;
+        ulong longValue = value ? 1UL : 0UL;    
         bits |= longValue << currentBitCount;
         currentBitCount++;
         WriteIfNecessary();
     }
 
     private void WriteBits(long value, int bitCount) {
-        bits |= value << currentBitCount;
+        ulong uvalue = (ulong) value;
+        bits |= uvalue << currentBitCount;
         currentBitCount+=bitCount;
         WriteIfNecessary();
     }
@@ -42,7 +45,7 @@ public class Bitbuffer {
         int maxFloor = Mathf.FloorToInt(min);
         float maxDecimal = max - maxFloor;
         if((maxDecimal/step)%1 != 0) throw new ArgumentException("Max must be divisible by step"); 
-        if((value/step)%1 != 0) throw new ArgumentException("Value must be divisible by step"); 
+        if(((value-min)/step)%1 != 0) throw new ArgumentException("Value must be divisible by step"); 
         
         int bits = Mathf.CeilToInt(Mathf.Log((max-min + 1)/step, 2));
         int countedValue = Mathf.FloorToInt((value - min) / step);
@@ -56,14 +59,16 @@ public class Bitbuffer {
         }
         
         int bytes = Mathf.CeilToInt(currentBitCount / 8f);
-        while (bytes>0) {
-            int word = (int) bits;
-            byte b = (byte) (word >> (bytes-1)*8);
-            buffer.WriteByte(b);
-            bytes--;
+        for (int i = 0; i < bytes; i++) {
+            byte word = (byte) bits;
+            bits >>= 8;
+            buffer.WriteByte(word);
         }
-        bits >>= 64;
         currentBitCount = 0;
+    }
+
+    public void toRead() {
+        buffer.Position = 0;
     }
 
     public bool ReadBit() {
@@ -76,19 +81,19 @@ public class Bitbuffer {
         return answer;
     }
     
-    public long ReadBits(int bitCount) {
+    private ulong ReadBits(int bitCount) {
         if (currentBitCount < bitCount) {
             loadInt();
         }
         currentBitCount -= bitCount;
-        long word =  bits & ~(1<<bitCount);
+        ulong word =  bits & (ulong)~(-1<<bitCount);
         bits >>= bitCount;
         return word;
     }
 
     public int ReadInt(int min, int max) {
         if(min>=max) throw new ArgumentException("min should be lower than max");
-        int intSize = Mathf.CeilToInt(Mathf.Log(max - min + 1, 2));
+        int intSize = Mathf.CeilToInt(Mathf.Log(max-min+1, 2));
         return (int) ReadBits(intSize) + min;
     }
 
@@ -115,9 +120,19 @@ public class Bitbuffer {
         word |= c << 16;
         word |= b << 8;
         word |= a;
-        bits <<= 32;
-        bits |= word;
+        word <<= currentBitCount;
+        bits |= (ulong)word;
         currentBitCount += 32;
+    }
+
+    private string Reverse(string s) {
+        char[] arr = s.ToCharArray();
+        Array.Reverse(arr);
+        return new string(arr);
+    }
+
+    private string PrettyPrint() {
+        return Reverse(Regex.Replace(Reverse(Convert.ToString((long)bits, 2).PadLeft(64, '0')), ".{6}", "$0-"));
     }
 
     private void WriteIfNecessary() {
@@ -135,7 +150,7 @@ public class Bitbuffer {
         buffer.WriteByte(c);
         buffer.WriteByte(b);
         buffer.WriteByte(a);
-        bits >>= 32;
+        bits = bits>> 32;
         currentBitCount -= 32;
     }
 }
