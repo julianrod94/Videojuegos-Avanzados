@@ -9,7 +9,7 @@ public class Bitbuffer {
 
     private int currentBitCount;
 
-    private MemoryStream buffer = new MemoryStream(10000000);
+    private MemoryStream buffer = new MemoryStream(1000000);
 
     public void WriteBool(bool value) {
         WriteBit(value);
@@ -65,9 +65,11 @@ public class Bitbuffer {
             buffer.WriteByte(word);
         }
         currentBitCount = 0;
+        bits = 0;
     }
 
     public void toRead() {
+        flush();
         buffer.Position = 0;
     }
 
@@ -94,7 +96,11 @@ public class Bitbuffer {
     public int ReadInt(int min, int max) {
         if(min>=max) throw new ArgumentException("min should be lower than max");
         int intSize = Mathf.CeilToInt(Mathf.Log(max-min+1, 2));
-        return (int) ReadBits(intSize) + min;
+        uint answer = (uint)ReadBits(intSize);
+        if (answer + min > max) {
+            throw new ArgumentException("value was greater than max");
+        }
+        return (int) ( answer+ min);
     }
 
     public float ReadFloat(float min, float max, float step) {
@@ -111,17 +117,17 @@ public class Bitbuffer {
     }
     
     private void loadInt() {
-        byte d = (byte) buffer.ReadByte();
-        byte c = (byte) buffer.ReadByte();
-        byte b = (byte) buffer.ReadByte();
         byte a = (byte) buffer.ReadByte();
-        long word = 0;
-        word |= d << 24;
-        word |= c << 16;
-        word |= b << 8;
-        word |= a;
+        byte b = (byte) buffer.ReadByte();
+        byte c = (byte) buffer.ReadByte();
+        byte d = (byte) buffer.ReadByte();
+        ulong word = 0;
+        word = word | a;
+        word = word | (uint)(b << 8);
+        word = word | (uint)(c << 16);
+        word = word | (uint)(d << 24);
         word <<= currentBitCount;
-        bits |= (ulong)word;
+        bits |= word;
         currentBitCount += 32;
     }
 
@@ -131,6 +137,10 @@ public class Bitbuffer {
         return new string(arr);
     }
 
+    private string PrettyPrint2(uint word) {
+        return Reverse(Regex.Replace(Reverse(Convert.ToString((uint)word, 2).PadLeft(64, '0')), ".{6}", "$0-"));
+    }
+    
     private string PrettyPrint() {
         return Reverse(Regex.Replace(Reverse(Convert.ToString((long)bits, 2).PadLeft(64, '0')), ".{6}", "$0-"));
     }
@@ -141,16 +151,16 @@ public class Bitbuffer {
             throw new InvalidOperationException("write buffer overflow");
         }
 
-        int word = (int) bits;
+        ulong word = ((uint) bits);
         byte a = (byte) (word);
         byte b = (byte) (word >> 8);
         byte c = (byte) (word >> 16);
         byte d = (byte) (word >> 24);
-        buffer.WriteByte(d);
-        buffer.WriteByte(c);
-        buffer.WriteByte(b);
         buffer.WriteByte(a);
-        bits = bits>> 32;
+        buffer.WriteByte(b);
+        buffer.WriteByte(c);
+        buffer.WriteByte(d);
+        bits >>= 32;
         currentBitCount -= 32;
     }
 }

@@ -45,10 +45,22 @@ public class BitbufferTest {
             bitbuffer.WriteInt(i, -20, 20);
         }
         
-        bitbuffer.flush();
         bitbuffer.toRead();
         for (int i = -20; i < 20; i++) {
             Assert.AreEqual(i, bitbuffer.ReadInt(-20, 20));
+        }
+    }
+    
+    [Test]
+    public void SendIntsInStepsNegative() {
+        Bitbuffer bitbuffer = new Bitbuffer();
+        for (int i = -1000; i < 1000; i+=3) {
+            bitbuffer.WriteInt(i, -1000, 1000);
+        }
+        
+        bitbuffer.toRead();
+        for (int i = -1000; i < 1000; i+=3) {
+            Assert.AreEqual(i, bitbuffer.ReadInt(-1000, 1000));
         }
     }
 
