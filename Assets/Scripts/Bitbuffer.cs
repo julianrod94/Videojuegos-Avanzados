@@ -11,6 +11,8 @@ public class Bitbuffer {
 
     private MemoryStream buffer = new MemoryStream(1000000);
 
+    private static float epsilon = 1E-4f;
+
     public void WriteBool(bool value) {
         WriteBit(value);
     }
@@ -39,16 +41,18 @@ public class Bitbuffer {
     public void WriteFloat(float value, float min, float max, float step) {
         if(min>=max) throw new ArgumentException("min should be lower than max");
         if(value > max || value < min) throw new ArgumentException("Value must be between min and max");
-        int minFloor = Mathf.FloorToInt(min);
-        float minDecimal = min - minFloor;
-        if((minDecimal/step)%1 != 0) throw new ArgumentException("Min must be divisible by step");    
-        int maxFloor = Mathf.FloorToInt(min);
-        float maxDecimal = max - maxFloor;
-        if((maxDecimal/step)%1 != 0) throw new ArgumentException("Max must be divisible by step"); 
-        if(((value-min)/step)%1 != 0) throw new ArgumentException("Value must be divisible by step"); 
+        var divisor = ((max - min) / step);
+        if (Mathf.Abs(divisor - Mathf.RoundToInt(divisor)) > epsilon ) {
+            throw new ArgumentException("Range must be divisible by step ");
+        }
         
+        divisor = (value-min) / step;
+        if (Mathf.Abs(divisor - Mathf.RoundToInt(divisor)) > epsilon ) {
+            throw new ArgumentException("Value must be divisible by step " + Mathf.Abs(divisor - Mathf.RoundToInt(divisor))); 
+        }
+
         int bits = Mathf.CeilToInt(Mathf.Log((max-min + 1)/step, 2));
-        int countedValue = Mathf.FloorToInt((value - min) / step);
+        int countedValue = Mathf.RoundToInt((value - min) / step);
         WriteBits(countedValue, bits);
     }
 
@@ -104,16 +108,13 @@ public class Bitbuffer {
     }
 
     public float ReadFloat(float min, float max, float step) {
-        //TODO Revisar
         if(min>=max) throw new ArgumentException("min should be lower than max");
-        int minFloor = Mathf.FloorToInt(min);
-        float minDecimal = min - minFloor;
-        if((minDecimal/step)%1 != 0) throw new ArgumentException("Min must be divisible by step");    
-        int maxFloor = Mathf.FloorToInt(min);
-        float maxDecimal = max - maxFloor;
-        if((maxDecimal/step)%1 != 0) throw new ArgumentException("Max must be divisible by step"); 
+        var divisor = ((max - min) / step);
+        if (Mathf.Abs(divisor - Mathf.RoundToInt(divisor)) > epsilon) {
+            throw new ArgumentException("Range must be divisible by step ");
+        }
         int floatSize = Mathf.CeilToInt(Mathf.Log((max-min)/step, 2));
-        return ReadBits(floatSize);
+        return min + ReadBits(floatSize)*step;
     }
     
     private void loadInt() {

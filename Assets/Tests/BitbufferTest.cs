@@ -7,6 +7,7 @@ using System.Collections;
 public class BitbufferTest {
 
     private int[] numbers = { 2, 4 };
+    private float epsilon = 1E-4f;
 
     [Test]
     public void SendBoolTest() {
@@ -63,6 +64,36 @@ public class BitbufferTest {
             Assert.AreEqual(i, bitbuffer.ReadInt(-1000, 1000));
         }
     }
+    
+    [Test]
+    public void SendFloats() {
+        Bitbuffer bitbuffer = new Bitbuffer();
+        for (float i = 0; i < 10; i+=0.1f) {
+            bitbuffer.WriteFloat(i, 0, 10, 0.1f);
+        }
+        
+        bitbuffer.toRead();
+        for (float i = 0; i < 10; i+=0.1f) {
+            float red = bitbuffer.ReadFloat(0, 10, 0.1f);
+            Debug.Log("Comparing " + i + " to " + red);
+            Assert.Less(Mathf.Abs(i-red), epsilon);
+        }
+    }
+    
+        
+    [Test]
+    public void SendFloatsNegative() {
+        Bitbuffer bitbuffer = new Bitbuffer();
+        for (float i = -50; i < 55; i+=2.1f) {
+            bitbuffer.WriteFloat(i, -50, 55, 2.1f);
+        }
+        
+        bitbuffer.toRead();
+        for (float i = -50; i < 55; i+=2.1f) {
+            Assert.Less(Mathf.Abs(i-bitbuffer.ReadFloat(-50, 55, 2.1f)), epsilon);
+        }
+    }
+
 
     // A UnityTest behaves like a coroutine in PlayMode
     // and allows you to yield null to skip a frame in EditMode
