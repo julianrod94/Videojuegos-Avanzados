@@ -5,9 +5,9 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class Bitbuffer {
-    private ulong bits;
+    private ulong _bits;
 
-    private int currentBitCount;
+    private int _currentBitCount;
 
     private MemoryStream buffer = new MemoryStream(1000000);
 
@@ -19,15 +19,15 @@ public class Bitbuffer {
 
     private void WriteBit(bool value) {
         ulong longValue = value ? 1UL : 0UL;    
-        bits |= longValue << currentBitCount;
-        currentBitCount++;
+        _bits |= longValue << _currentBitCount;
+        _currentBitCount++;
         WriteIfNecessary();
     }
 
     private void WriteBits(long value, int bitCount) {
         ulong uvalue = (ulong) value;
-        bits |= uvalue << currentBitCount;
-        currentBitCount+=bitCount;
+        _bits |= uvalue << _currentBitCount;
+        _currentBitCount+=bitCount;
         WriteIfNecessary();
     }
 
@@ -56,44 +56,44 @@ public class Bitbuffer {
         WriteBits(countedValue, bits);
     }
 
-    public void flush() {
-        if(currentBitCount == 0) return;
+    public void Flush() {
+        if(_currentBitCount == 0) return;
         if (buffer.Position + 4 > buffer.Capacity) {
             throw new InvalidOperationException("write buffer overflow");
         }
         
-        int bytes = Mathf.CeilToInt(currentBitCount / 8f);
+        int bytes = Mathf.CeilToInt(_currentBitCount / 8f);
         for (int i = 0; i < bytes; i++) {
-            byte word = (byte) bits;
-            bits >>= 8;
+            byte word = (byte) _bits;
+            _bits >>= 8;
             buffer.WriteByte(word);
         }
-        currentBitCount = 0;
-        bits = 0;
+        _currentBitCount = 0;
+        _bits = 0;
     }
 
-    public void toRead() {
-        flush();
+    public void ToRead() {
+        Flush();
         buffer.Position = 0;
     }
 
     public bool ReadBit() {
-        if (currentBitCount < 1) {
-            loadInt();
+        if (_currentBitCount < 1) {
+            LoadInt();
         }
-        currentBitCount--;
-        bool answer = (bits & 1) == 1;
-        bits >>= 1;
+        _currentBitCount--;
+        bool answer = (_bits & 1) == 1;
+        _bits >>= 1;
         return answer;
     }
     
     private ulong ReadBits(int bitCount) {
-        if (currentBitCount < bitCount) {
-            loadInt();
+        if (_currentBitCount < bitCount) {
+            LoadInt();
         }
-        currentBitCount -= bitCount;
-        ulong word =  bits & (ulong)~(-1<<bitCount);
-        bits >>= bitCount;
+        _currentBitCount -= bitCount;
+        ulong word =  _bits & (ulong)~(-1<<bitCount);
+        _bits >>= bitCount;
         return word;
     }
 
@@ -117,7 +117,7 @@ public class Bitbuffer {
         return min + ReadBits(floatSize)*step;
     }
     
-    private void loadInt() {
+    private void LoadInt() {
         byte a = (byte) buffer.ReadByte();
         byte b = (byte) buffer.ReadByte();
         byte c = (byte) buffer.ReadByte();
@@ -127,9 +127,9 @@ public class Bitbuffer {
         word = word | (uint)(b << 8);
         word = word | (uint)(c << 16);
         word = word | (uint)(d << 24);
-        word <<= currentBitCount;
-        bits |= word;
-        currentBitCount += 32;
+        word <<= _currentBitCount;
+        _bits |= word;
+        _currentBitCount += 32;
     }
 
     private string Reverse(string s) {
@@ -137,22 +137,18 @@ public class Bitbuffer {
         Array.Reverse(arr);
         return new string(arr);
     }
-
-    private string PrettyPrint2(uint word) {
-        return Reverse(Regex.Replace(Reverse(Convert.ToString((uint)word, 2).PadLeft(64, '0')), ".{6}", "$0-"));
-    }
     
     private string PrettyPrint() {
-        return Reverse(Regex.Replace(Reverse(Convert.ToString((long)bits, 2).PadLeft(64, '0')), ".{6}", "$0-"));
+        return Reverse(Regex.Replace(Reverse(Convert.ToString((long)_bits, 2).PadLeft(64, '0')), ".{6}", "$0-"));
     }
 
     private void WriteIfNecessary() {
-        if (currentBitCount < 32) return;
+        if (_currentBitCount < 32) return;
         if (buffer.Position + 4 > buffer.Capacity) {
             throw new InvalidOperationException("write buffer overflow");
         }
 
-        ulong word = ((uint) bits);
+        ulong word = ((uint) _bits);
         byte a = (byte) (word);
         byte b = (byte) (word >> 8);
         byte c = (byte) (word >> 16);
@@ -161,7 +157,21 @@ public class Bitbuffer {
         buffer.WriteByte(b);
         buffer.WriteByte(c);
         buffer.WriteByte(d);
-        bits >>= 32;
-        currentBitCount -= 32;
+        _bits >>= 32;
+        _currentBitCount -= 32;
+    }
+
+    public byte[] GenerateBytes() {
+        Flush();
+        long size = buffer.Length;
+        byte[] dest = new byte[size];
+        Array.Copy(buffer.GetBuffer(), dest, size);
+        return dest;
+    }
+
+    public void ToWrite() {
+        _currentBitCount = 0;
+        _bits = 0;
+        buffer.Position = 0;
     }
 }

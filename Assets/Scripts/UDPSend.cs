@@ -21,12 +21,12 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
  
-public class UDPSend : MonoBehaviour
-{
+public class UDPSend : MonoBehaviour {
+    
     private static int localPort;
    
     // prefs
-    private string IP;  // define in init
+    public string IP;  // define in init
     public int port;  // define in init
    
     // "connection" things
@@ -81,10 +81,6 @@ public class UDPSend : MonoBehaviour
     {
         // Endpunkt definieren, von dem die Nachrichten gesendet werden.
         print("UDPSend.init()");
-       
-        // define
-        IP="127.0.0.1";
-        port=8051;
        
         // ----------------------------
         // Senden

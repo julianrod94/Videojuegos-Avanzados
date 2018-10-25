@@ -24,7 +24,7 @@ public class BitbufferTest {
         for (int i = 0; i < numbers.Length; i++) {
             bitbuffer.WriteInt(numbers[i], -5, 3356748);
             Assert.AreEqual(numbers[i], bitbuffer.ReadInt(-5, 3356748));
-            bitbuffer.flush();
+            bitbuffer.Flush();
         }
     }
 
@@ -46,7 +46,7 @@ public class BitbufferTest {
             bitbuffer.WriteInt(i, -20, 20);
         }
         
-        bitbuffer.toRead();
+        bitbuffer.ToRead();
         for (int i = -20; i < 20; i++) {
             Assert.AreEqual(i, bitbuffer.ReadInt(-20, 20));
         }
@@ -59,7 +59,7 @@ public class BitbufferTest {
             bitbuffer.WriteInt(i, -1000, 1000);
         }
         
-        bitbuffer.toRead();
+        bitbuffer.ToRead();
         for (int i = -1000; i < 1000; i+=3) {
             Assert.AreEqual(i, bitbuffer.ReadInt(-1000, 1000));
         }
@@ -72,7 +72,7 @@ public class BitbufferTest {
             bitbuffer.WriteFloat(i, 0, 10, 0.1f);
         }
         
-        bitbuffer.toRead();
+        bitbuffer.ToRead();
         for (float i = 0; i < 10; i+=0.1f) {
             float red = bitbuffer.ReadFloat(0, 10, 0.1f);
             Debug.Log("Comparing " + i + " to " + red);
@@ -88,7 +88,7 @@ public class BitbufferTest {
             bitbuffer.WriteFloat(i, -50, 55, 2.1f);
         }
         
-        bitbuffer.toRead();
+        bitbuffer.ToRead();
         for (float i = -50; i < 55; i+=2.1f) {
             Assert.Less(Mathf.Abs(i-bitbuffer.ReadFloat(-50, 55, 2.1f)), epsilon);
         }
