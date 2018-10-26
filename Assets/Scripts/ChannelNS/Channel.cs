@@ -1,20 +1,25 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using UnityEngine;
 
 namespace ChannelNS {
-    public abstract class Channel<T> {
-        protected ISenderStrategy Strategy { get; private set; }
-        protected Bitbuffer buffer;
+    public abstract class GenericChannel {
+        protected ISenderStrategy Strategy;
 
-        public void ReceivePackage(byte[] bytes) {
+        public void SetupSender(Action<byte[]> sender) {
+            Strategy.SetupSender(sender);
+        }
+
+        public abstract void ReceivePackage(byte[] bytes);
+    }
+
+    public abstract class Channel<T> : GenericChannel {
+        protected Bitbuffer buffer = new Bitbuffer();
+
+        public override void ReceivePackage(byte[] bytes) {
             Strategy.ReceivePackage(bytes);
         }
 
         /// <summary>
-        /// Must be called at initialization to initiate the strategy
+        ///     Must be called at initialization to initiate the strategy
         /// </summary>
         /// <param name="strategy">SenderStrategy to be used</param>
         protected void setupStrategy(ISenderStrategy strategy) {
@@ -22,15 +27,13 @@ namespace ChannelNS {
             strategy.SetupListener(ProcessData);
         }
 
-        public abstract T DeserializeData(byte[] bytes);
-        public abstract byte[] SerializeData(T data);
+        protected abstract T DeserializeData(byte[] bytes);
+        protected abstract byte[] SerializeData(T data);
 
         /// <summary>
-        /// Respond correctly to a new message
+        ///     Respond correctly to a new message
         /// </summary>
         /// <param name="bytes">Message that arrived by the sender strategy</param>
         protected abstract void ProcessData(byte[] bytes);
-
     }
 }
-

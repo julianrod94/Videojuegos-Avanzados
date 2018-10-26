@@ -1,46 +1,49 @@
-﻿using System.Diagnostics;
+﻿using System;
 using System.Threading;
 using StateNS;
+using UnityEngine;
 
 namespace ChannelNS {
-    public abstract class StateChannel<T>: Channel<T> where T: IInterpolatableState {
-        private Interpolator _interpolator;
-        private IStateProvider<T> _stateProvider;
+    public abstract class StateChannel<T> : Channel<T> where T : IInterpolatableState<T> {
         private long _period;
+        private Func<T> _stateProvider;
         private Timer _timer;
-        
-        public StateChannel<T> SetupStateProvider(IStateProvider<T> stateProvider) {
+        public Interpolator<T> Interpolator;
+
+        public void SetupStateProvider(Func<T> stateProvider) {
             _stateProvider = stateProvider;
-            return this;
         }
 
-        public StateChannel<T> SetupPeriod(long period) {
+        public void SetupPeriod(long period) {
             _period = period;
-            return this;
         }
-        
-        public StateChannel<T> SetupInterpolator(Interpolator interpolator) {
-            _interpolator = interpolator;
-            return this;
+
+        public void SetupInterpolator(Interpolator<T> interpolator) {
+            Interpolator = interpolator;
         }
 
         public void StartSending() {
-            TimerCallback tc = state => { SendState(_stateProvider.PollState()); };
+            Interpolator.StartInterpolating();
+            TimerCallback tc = state => SendState(_stateProvider());
             _timer = new Timer(tc, null, 0, _period);
         }
 
         public void DisposeTimer() {
             _timer.Dispose();
         }
-        
+
         public void SendState(T newState) {
-            byte[] data = SerializeData(newState);
+            Debug.Log("SendPacket " + newState);
+            var data = SerializeData(newState);
+            Debug.Log(data);
             Strategy.SendPackage(data);
         }
 
         protected override void ProcessData(byte[] bytes) {
-            T newState = DeserializeData(bytes);
-            _interpolator.AddFrame(newState);
+            Debug.Log("Processing");
+            var newState = DeserializeData(bytes);
+            Debug.Log("newsteate" + newState);
+            Interpolator.AddFrame(newState);
         }
     }
 }

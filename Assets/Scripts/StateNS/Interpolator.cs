@@ -1,139 +1,115 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace StateNS {
-	public 	enum InterpolatorState {
-		Uninitialized,
-		WaitingFirstFrame,
-		Interpolating
-	}
-	
+    public enum InterpolatorState {
+        Uninitialized,
+        WaitingFirstFrame,
+        Interpolating
+    }
 
-	public class Interpolator : MonoBehaviour {
-	
-		public static Interpolator Instance;
-		
-		public float MaxTimeUntilJump;
-		public int FrameBufferSize;
-	
-		private readonly SortedDictionary<IInterpolatableState, bool> _frames = 
-			new SortedDictionary<IInterpolatableState, bool>(new WorldStateComparer());
+    public class Interpolator<T> where T : IInterpolatableState<T> {
+        private readonly SortedDictionary<T, bool> _frames =
+            new SortedDictionary<T, bool>(new WorldStateComparer());
 
-		private IInterpolatableState _pastState;
-		private IInterpolatableState _targetState;
+        private T _pastState;
+        private T _targetState;
+        private float _time = -1;
+        public int FrameBufferSize = 2;
 
-		public InterpolatorState CurrentState { get; private set; }
-		private float _time = -1;
-	
-		// Use this for initialization
-		public void Awake () {
-			if (Instance == null) {
-				Instance = this;
-				CurrentState = InterpolatorState.Uninitialized;
-				DontDestroyOnLoad(gameObject);
-			} else {
-				Destroy(this);	
-			}
-		}
+        public float MaxTimeUntilJump = 1;
+        public T PresentState { get; private set; }
 
-		public void StartInterpolating() {
-			if (CurrentState == InterpolatorState.Uninitialized) {
-				CurrentState = InterpolatorState.WaitingFirstFrame;	
-			}
-		}
-	
-		public void AddFrame(IInterpolatableState state) {
-			lock (this) {
-				Debug.Log("Adding Frame");
-				_frames[state] = true;
-			}
-		}
+        public InterpolatorState CurrentState { get; private set; }
 
-		public void Update() {
-			lock (this) {
-				if (CurrentState == InterpolatorState.Uninitialized) {
-					return;
-				}
-			
-				PickPastState();
-				if(_pastState == null) { return; }
 
-				Debug.Log("Interpolating with " + _frames.Count + "frames on queue");
-			
-				_time += Time.deltaTime;
+        public void StartInterpolating() {
+            if (CurrentState == InterpolatorState.Uninitialized) CurrentState = InterpolatorState.WaitingFirstFrame;
+        }
 
-				if (_targetState != null && _targetState.TimeStamp() < _time) {
-					_pastState = _targetState;
-					_targetState = null;
-				}
-			
-				var nextState = _frames.FirstOrDefault().Key;
-			
-				if(_targetState == null && nextState == null) { return; }
-			
-				if (_targetState == null) {
-					_targetState = nextState;
-					_frames.Remove(nextState);
-				}
-			
-				_pastState.UpdateState(
-					(_time - _pastState.TimeStamp()) / (_targetState.TimeStamp() -_pastState.TimeStamp()),
-					_targetState
-				);
-			}
-		}
+        public void AddFrame(T state) {
+            lock (this) {
+                Debug.Log("Adding Frame");
+                _frames[state] = true;
+            }
+        }
 
-		private void PickPastState() {
-			if(CurrentState == InterpolatorState.Uninitialized) { return; }
-		
-			var newPastState = _frames.FirstOrDefault().Key;
+        public void Update(float deltaTime) {
+            lock (this) {
+                if (CurrentState == InterpolatorState.Uninitialized) return;
 
-			if (CurrentState == InterpolatorState.WaitingFirstFrame) {
-				if (_frames.Count >= FrameBufferSize) {
-					SetStateAndRemove(newPastState);
-				}
-				return;
-			}
-		
-			if(_targetState == null && (_time - _pastState.TimeStamp()) > MaxTimeUntilJump) {
-				_pastState = null;
-				CurrentState = InterpolatorState.WaitingFirstFrame;
-				return;
-			}
-		
-		
-			while (newPastState != null && newPastState.TimeStamp() < _pastState.TimeStamp()) {
-				_frames.Remove(newPastState);
-				newPastState = _frames.FirstOrDefault().Key;
-			}
-		}
+                PickPastState();
+                if (_pastState == null) return;
 
-		private void SetStateAndRemove(IInterpolatableState newState) {
-			if (newState != null) {
-				CurrentState = InterpolatorState.Interpolating;
-				_pastState = newState;
-				_time = _pastState.TimeStamp();
-				_frames.Remove(newState);
-			}
-		}
-		
-		
-		private class WorldStateComparer: IComparer<IInterpolatableState> {
-			public int Compare(IInterpolatableState x, IInterpolatableState y) {
-				System.Diagnostics.Debug.Assert(y != null, "y != null");
-				System.Diagnostics.Debug.Assert(x != null, "x != null");
-				if (y.TimeStamp() < x.TimeStamp()) {
-					return 1;
-				}
-			
-				if (y.TimeStamp() > x.TimeStamp()) {
-					return -1;
-				}
+                Debug.Log("Interpolating with " + _frames.Count + "frames on queue");
 
-				return 0;
-			}
-		}
-	}
+                _time += deltaTime;
+
+                if (_targetState != null && _targetState.TimeStamp() < _time) {
+                    _pastState = _targetState;
+                    _targetState = default(T);
+                }
+
+                var nextState = _frames.FirstOrDefault().Key;
+
+                if (_targetState == null && nextState == null) return;
+
+                if (_targetState == null) {
+                    _targetState = nextState;
+                    _frames.Remove(nextState);
+                }
+
+                PresentState = _pastState.UpdateState(
+                    (_time - _pastState.TimeStamp()) / (_targetState.TimeStamp() - _pastState.TimeStamp()),
+                    _targetState
+                );
+            }
+        }
+
+        private void PickPastState() {
+            if (CurrentState == InterpolatorState.Uninitialized) return;
+
+            var newPastState = _frames.FirstOrDefault().Key;
+
+            if (CurrentState == InterpolatorState.WaitingFirstFrame) {
+                if (_frames.Count >= FrameBufferSize) SetStateAndRemove(newPastState);
+                return;
+            }
+
+            if (_targetState == null && _time - _pastState.TimeStamp() > MaxTimeUntilJump) {
+                _pastState = default(T);
+                CurrentState = InterpolatorState.WaitingFirstFrame;
+                return;
+            }
+
+
+            while (newPastState != null && newPastState.TimeStamp() < _pastState.TimeStamp()) {
+                _frames.Remove(newPastState);
+                newPastState = _frames.FirstOrDefault().Key;
+            }
+        }
+
+        private void SetStateAndRemove(T newState) {
+            if (newState != null) {
+                CurrentState = InterpolatorState.Interpolating;
+                _pastState = newState;
+                _time = _pastState.TimeStamp();
+                _frames.Remove(newState);
+            }
+        }
+
+
+        private class WorldStateComparer : IComparer<T> {
+            public int Compare(T x, T y) {
+                System.Diagnostics.Debug.Assert(y != null, "y != null");
+                System.Diagnostics.Debug.Assert(x != null, "x != null");
+                if (y.TimeStamp() < x.TimeStamp()) return 1;
+
+                if (y.TimeStamp() > x.TimeStamp()) return -1;
+
+                return 0;
+            }
+        }
+    }
 }
