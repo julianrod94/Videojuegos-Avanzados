@@ -16,12 +16,10 @@ namespace SenderStrategy {
         }
 
         public void SendPackage(byte[] bytes) {
-            Debug.Log("PacketSent");
             _sender(bytes);
         }
 
         public void ReceivePackage(byte[] bytes) {
-            Debug.Log("PacketReceived");
             _receiver(bytes);
         }
     }

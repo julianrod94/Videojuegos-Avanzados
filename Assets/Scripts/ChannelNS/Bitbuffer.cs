@@ -4,12 +4,12 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class Bitbuffer {
-    private static readonly float epsilon = 1E-4f;
+    private static readonly float epsilon = 1E-3f;
     private ulong _bits;
 
     private int _currentBitCount;
 
-    private readonly MemoryStream buffer = new MemoryStream(100);
+    private MemoryStream buffer = new MemoryStream(100);
 
     public void WriteBool(bool value) {
         WriteBit(value);
@@ -36,12 +36,17 @@ public class Bitbuffer {
         WriteBits(value - min, bits);
     }
 
+    public void WriteFloatRounded(float value, float min, float max, float step) {
+        var newValue = Mathf.RoundToInt(value / step) * step;
+        WriteFloat(newValue, min, max, step);
+    }
+
     public void WriteFloat(float value, float min, float max, float step) {
         if (min >= max) throw new ArgumentException("min should be lower than max");
         if (value > max || value < min) throw new ArgumentException("Value must be between min and max");
         var divisor = (max - min) / step;
         if (Mathf.Abs(divisor - Mathf.RoundToInt(divisor)) > epsilon)
-            throw new ArgumentException("Range must be divisible by step ");
+            throw new ArgumentException("Range (" + min + "-" + max + ") must be divisible by step " + step);
 
         divisor = (value - min) / step;
         if (Mathf.Abs(divisor - Mathf.RoundToInt(divisor)) > epsilon)
@@ -101,7 +106,7 @@ public class Bitbuffer {
         if (min >= max) throw new ArgumentException("min should be lower than max");
         var divisor = (max - min) / step;
         if (Mathf.Abs(divisor - Mathf.RoundToInt(divisor)) > epsilon)
-            throw new ArgumentException("Range must be divisible by step ");
+            throw new ArgumentException("Range (" + min + "-" + max + ") must be divisible by step " + step);
         var floatSize = Mathf.CeilToInt(Mathf.Log((max - min) / step, 2));
         return min + ReadBits(floatSize) * step;
     }
@@ -160,5 +165,11 @@ public class Bitbuffer {
         _currentBitCount = 0;
         _bits = 0;
         buffer.Position = 0;
+    }
+
+    public void LoadBytes(byte[] bytes) {
+        //TODO look for a better way for this
+        buffer = new MemoryStream(100);
+        buffer.Write(bytes, 0, bytes.Length);
     }
 }

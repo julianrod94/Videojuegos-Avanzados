@@ -20,11 +20,12 @@ namespace ChannelNS {
 
         public void SetupInterpolator(Interpolator<T> interpolator) {
             Interpolator = interpolator;
+            interpolator.StartInterpolating();
         }
 
         public void StartSending() {
             Interpolator.StartInterpolating();
-            TimerCallback tc = state => SendState(_stateProvider());
+            TimerCallback tc = state => SendState();
             _timer = new Timer(tc, null, 0, _period);
         }
 
@@ -32,17 +33,15 @@ namespace ChannelNS {
             _timer.Dispose();
         }
 
-        public void SendState(T newState) {
-            Debug.Log("SendPacket " + newState);
+        public void SendState() {
+            var newState = _stateProvider();
+            if(newState == null) return;
             var data = SerializeData(newState);
-            Debug.Log(data);
             Strategy.SendPackage(data);
         }
 
         protected override void ProcessData(byte[] bytes) {
-            Debug.Log("Processing");
             var newState = DeserializeData(bytes);
-            Debug.Log("newsteate" + newState);
             Interpolator.AddFrame(newState);
         }
     }

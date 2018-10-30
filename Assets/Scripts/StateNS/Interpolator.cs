@@ -30,7 +30,6 @@ namespace StateNS {
 
         public void AddFrame(T state) {
             lock (this) {
-                Debug.Log("Adding Frame");
                 _frames[state] = true;
             }
         }
@@ -41,8 +40,6 @@ namespace StateNS {
 
                 PickPastState();
                 if (_pastState == null) return;
-
-                Debug.Log("Interpolating with " + _frames.Count + "frames on queue");
 
                 _time += deltaTime;
 

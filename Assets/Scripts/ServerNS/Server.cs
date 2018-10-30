@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ChannelNS;
 
 namespace ServerNS {
@@ -21,19 +22,21 @@ namespace ServerNS {
         }
 
         private void SendPacket(byte[] bytes, GenericChannel channel) {
-            _other.ReceivePacket(AddByteToArray(bytes, _channelNumbers[channel]));
+            var modifiedArray = AddByteToArray(bytes, _channelNumbers[channel]);
+            _other.ReceivePacket(modifiedArray);
         }
 
         private void ReceivePacket(byte[] bytes) {
             var channelNumber = bytes[bytes.Length - 1];
-            Array.Resize(ref bytes, bytes.Length - 1);
-            _channels[channelNumber].ReceivePackage(bytes);
+            var newArray = new byte[bytes.Length -1];
+            Buffer.BlockCopy(bytes,0,newArray,0,bytes.Length - 1);
+            _channels[channelNumber].ReceivePackage(newArray);
         }
 
         private byte[] AddByteToArray(byte[] bArray, byte newByte) {
             var newArray = new byte[bArray.Length + 1];
-            bArray.CopyTo(newArray, 1);
-            newArray[0] = newByte;
+            bArray.CopyTo(newArray, 0);
+            newArray[bArray.Length] = newByte;
             return newArray;
         }
     }

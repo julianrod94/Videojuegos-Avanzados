@@ -10,7 +10,6 @@ public class CubePositionProvider : MonoBehaviour, IUnityBridgeState<CubePositio
     public CubePosition lastState;
 
     public CubePosition GetCurrentState() {
-        Debug.Log(lastState);
         return lastState;
     }
 
