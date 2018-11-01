@@ -29,8 +29,9 @@ namespace ChannelNS {
             _timer = new Timer(tc, null, 0, _period);
         }
 
-        public void DisposeTimer() {
-            _timer.Dispose();
+        public override void Dispose() {
+           base.Dispose();
+           _timer.Dispose();
         }
 
         public void SendState() {

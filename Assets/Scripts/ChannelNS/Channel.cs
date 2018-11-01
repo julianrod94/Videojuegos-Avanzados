@@ -1,14 +1,19 @@
 ﻿using System;
+using SenderStrategyNS;
 
 namespace ChannelNS {
     public abstract class GenericChannel {
-        protected ISenderStrategy Strategy;
+        protected SenderStrategy Strategy;
 
         public void SetupSender(Action<byte[]> sender) {
             Strategy.SetupSender(sender);
         }
 
         public abstract void ReceivePackage(byte[] bytes);
+
+        public virtual void Dispose() {
+            Strategy.Dispose();
+        }
     }
 
     public abstract class Channel<T> : GenericChannel {
@@ -22,7 +27,7 @@ namespace ChannelNS {
         ///     Must be called at initialization to initiate the strategy
         /// </summary>
         /// <param name="strategy">SenderStrategy to be used</param>
-        protected void setupStrategy(ISenderStrategy strategy) {
+        protected void setupStrategy(SenderStrategy strategy) {
             Strategy = strategy;
             strategy.SetupListener(ProcessData);
         }

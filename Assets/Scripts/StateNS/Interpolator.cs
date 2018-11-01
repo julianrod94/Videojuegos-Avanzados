@@ -29,8 +29,10 @@ namespace StateNS {
         }
 
         public void AddFrame(T state) {
-            lock (this) {
-                _frames[state] = true;
+            if (PresentState == null || state.TimeStamp() > PresentState.TimeStamp()) {
+                lock (this) {
+                    _frames[state] = true;
+                }
             }
         }
 
@@ -70,7 +72,8 @@ namespace StateNS {
             var newPastState = _frames.FirstOrDefault().Key;
 
             if (CurrentState == InterpolatorState.WaitingFirstFrame) {
-                if (_frames.Count >= FrameBufferSize) SetStateAndRemove(newPastState);
+                if (_frames.Count >= FrameBufferSize) 
+                    SetStateAndRemove(newPastState);
                 return;
             }
 
@@ -80,8 +83,11 @@ namespace StateNS {
                 return;
             }
 
+            if (_targetState == null) {
+                return;
+            }
 
-            while (newPastState != null && newPastState.TimeStamp() < _pastState.TimeStamp()) {
+            while (newPastState != null && newPastState.TimeStamp() <= _targetState.TimeStamp()) {
                 _frames.Remove(newPastState);
                 newPastState = _frames.FirstOrDefault().Key;
             }

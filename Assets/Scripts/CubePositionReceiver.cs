@@ -1,6 +1,6 @@
 ﻿using ChannelNS;
 using ChannelNS.Implementations.StateChannels;
-using SenderStrategy;
+using SenderStrategyNS;
 using StateNS;
 using UnityEngine;
 
@@ -15,7 +15,7 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
 
     // Use this for initialization
     private void Start() {
-        _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
+        _cubeChannel = new CubePositionStateChannel(this, new ReliableStrategy(0.1f,10), 0.1f);
         SetupEverything.instance.receiver.RegisterChannel(_cubeChannel);
     }
 
@@ -29,6 +29,6 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
     }
 
     private void OnDestroy() {
-        _cubeChannel.DisposeTimer();
+        _cubeChannel.Dispose();
     }
 }

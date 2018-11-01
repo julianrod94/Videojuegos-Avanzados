@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ChannelNS;
+using Utils;
 
 namespace ServerNS {
     public class Server {
@@ -22,22 +23,12 @@ namespace ServerNS {
         }
 
         private void SendPacket(byte[] bytes, GenericChannel channel) {
-            var modifiedArray = AddByteToArray(bytes, _channelNumbers[channel]);
-            _other.ReceivePacket(modifiedArray);
+            _other.ReceivePacket(ArrayUtils.AddByteToArray(bytes, _channelNumbers[channel]));
         }
 
         private void ReceivePacket(byte[] bytes) {
             var channelNumber = bytes[bytes.Length - 1];
-            var newArray = new byte[bytes.Length -1];
-            Buffer.BlockCopy(bytes,0,newArray,0,bytes.Length - 1);
-            _channels[channelNumber].ReceivePackage(newArray);
-        }
-
-        private byte[] AddByteToArray(byte[] bArray, byte newByte) {
-            var newArray = new byte[bArray.Length + 1];
-            bArray.CopyTo(newArray, 0);
-            newArray[bArray.Length] = newByte;
-            return newArray;
+            _channels[channelNumber].ReceivePackage(ArrayUtils.RemoveBytes(bytes, 1));
         }
     }
 }
