@@ -84,7 +84,7 @@ namespace SenderStrategyNS {
             switch (command) {
                     case NORMAL_MESSAGE_BYTE:
                         _receiver(ArrayUtils.RemoveBytes(bytes, 2));
-//                        SendAck(messageId);
+                        SendAck(messageId);
                         break;
                     
                     case ACK_MESSAGE_BYTE:

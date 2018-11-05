@@ -6,7 +6,7 @@ namespace SenderStrategyNS {
         protected Action<byte[]> _receiver;
         protected Action<byte[]> _sender;
 
-        public void SetupListener(Action<byte[]> receiver) {
+        public void SetupReceiver(Action<byte[]> receiver) {
             _receiver = receiver;
         }
 
