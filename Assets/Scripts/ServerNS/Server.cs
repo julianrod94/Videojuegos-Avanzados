@@ -11,9 +11,9 @@ namespace ServerNS {
         private byte _currentChannels;
         private Server _other;
 
-        public void RegisterChannel(GenericChannel channel) {
-            _channelNumbers[channel] = _currentChannels;
-            _channels[_currentChannels] = channel;
+        public void RegisterChannel(byte number, GenericChannel channel) {
+            _channelNumbers[channel] = number;
+            _channels[number] = channel;
             channel.SetupSender(bytes => SendPacket(bytes, channel));
             _currentChannels++;
         }

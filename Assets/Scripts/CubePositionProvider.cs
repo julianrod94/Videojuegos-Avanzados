@@ -16,7 +16,7 @@ public class CubePositionProvider : MonoBehaviour, IUnityBridgeState<CubePositio
     // Use this for initialization
     private void Start() {
         _cubeChannel = new CubePositionStateChannel(this, new ReliableStrategy(0.2f,10), 0.1f);
-        SetupEverything.instance.sender.RegisterChannel(_cubeChannel);
+        SetupEverything.instance.sender.RegisterChannel(0, _cubeChannel);
         _cubeChannel.StartSending();
     }
 

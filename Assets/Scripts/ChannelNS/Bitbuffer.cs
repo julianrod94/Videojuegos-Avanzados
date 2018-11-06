@@ -16,6 +16,10 @@ namespace ChannelNS {
             WriteBit(value);
         }
 
+        public void WriteByte(byte b) {
+            WriteBits(b, 8);
+        }
+
         private void WriteBit(bool value) {
             var longValue = value ? 1UL : 0UL;
             _bits |= longValue << _currentBitCount;
@@ -77,6 +81,10 @@ namespace ChannelNS {
         public void ToRead() {
             Flush();
             buffer.Position = 0;
+        }
+        
+        public byte Readbyte() {
+            return (byte)ReadBits(8);
         }
 
         public bool ReadBit() {

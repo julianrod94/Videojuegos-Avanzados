@@ -1,8 +1,11 @@
-﻿namespace ChannelNS {
-    public abstract class EventChannel<T> : Channel<T> {
-        private IEventReceiver<T> _eventReceiver;
+﻿using System;
 
-        public EventChannel<T> SetupEventReceiver(IEventReceiver<T> eventReceiver) {
+namespace ChannelNS {
+    
+    public abstract class EventChannel<T> : Channel<T> {
+        private Action<T> _eventReceiver;
+
+        public EventChannel<T> SetupEventReceiver(Action<T> eventReceiver) {
             _eventReceiver = eventReceiver;
             return this;
         }
@@ -14,7 +17,7 @@
 
         protected override void ProcessData(byte[] bytes) {
             var newEvent = DeserializeData(bytes);
-            _eventReceiver.ReceiveEvent(newEvent);
+            _eventReceiver(newEvent);
         }
     }
 }

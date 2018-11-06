@@ -40,6 +40,7 @@ namespace ChannelNS.Implementations.StateChannels {
                     timeStamp = buffer.ReadFloat(_timeStampMin, _timeStampMax, _timeStampPrecision);
                 } catch (Exception e) {
                     Debug.LogError(e);
+                    throw;
                 }
 
                 return new CubePosition(timeStamp, new Vector3(x, y, z));
@@ -56,6 +57,7 @@ namespace ChannelNS.Implementations.StateChannels {
                     buffer.WriteFloatRounded(data.TimeStamp(), _timeStampMin, _timeStampMax, _timeStampPrecision);
                 } catch (Exception e) {
                     Debug.LogError(e);
+                    throw;
                 }
 
                 return buffer.GenerateBytes();
