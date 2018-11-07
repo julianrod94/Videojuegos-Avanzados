@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using ChannelNS;
+using UnityEngine;
 using Utils;
 
 namespace ServerNS {
     public class Server {
         private readonly Dictionary<GenericChannel, byte> _channelNumbers = new Dictionary<GenericChannel, byte>();
         private readonly Dictionary<byte, GenericChannel> _channels = new Dictionary<byte, GenericChannel>();
-        private byte _currentChannels;
         private Server _other;
 
         public void RegisterChannel(byte number, GenericChannel channel) {
             _channelNumbers[channel] = number;
             _channels[number] = channel;
             channel.SetupSender(bytes => SendPacket(bytes, channel));
-            _currentChannels++;
         }
 
         public void SetupOtherServer(Server other) {

@@ -3,7 +3,9 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 using ChannelNS;
+using InputManagerNS;
 
 public class BitbufferTest {
 
@@ -76,7 +78,6 @@ public class BitbufferTest {
         bitbuffer.ToRead();
         for (float i = 0; i < 10; i+=0.1f) {
             float red = bitbuffer.ReadFloat(0, 10, 0.1f);
-            Debug.Log("Comparing " + i + " to " + red);
             Assert.Less(Mathf.Abs(i-red), epsilon);
         }
     }
@@ -93,6 +94,53 @@ public class BitbufferTest {
         for (float i = -50; i < 55; i+=2.1f) {
             Assert.Less(Mathf.Abs(i-bitbuffer.ReadFloat(-50, 55, 2.1f)), epsilon);
         }
+    }
+    
+    private readonly int _minInputs = 0;
+    private readonly int _maxInputs = 255;
+        
+    private readonly int _minInputNumber = 0;
+    private readonly int _maxInputNumber = 1024*8-1;
+        
+    private readonly float _minDt = 0;
+    private readonly float _maxDT = 1f;
+    private readonly float _stepDT = 1/100f;
+
+    private readonly int _inputCommands = Enum.GetValues(typeof(InputEnum)).Length;
+
+    
+    [Test]
+    public void inputs() {
+        var inputM = new InputManager();
+        Bitbuffer buffer = new Bitbuffer();
+        var data = new List<PlayerAction>();
+        
+        data.Add(new PlayerAction(InputEnum.Left, 1, 0.2f));
+        data.Add(new PlayerAction(InputEnum.Right, 2, 0.2f));
+        data.Add(new PlayerAction(InputEnum.Forward, 3, 0.2f));
+        
+        buffer.ToWrite();
+        buffer.WriteInt(data.Count, _minInputs, _maxInputs);
+        foreach (var playerAction in data) {
+            buffer.WriteInt((int)playerAction.inputCommand, 0, _inputCommands);
+            buffer.WriteInt(playerAction.inputNumber, _minInputNumber, _maxInputNumber);
+            buffer.WriteFloatRounded(playerAction.deltaTime, _minDt, _maxDT, _stepDT);
+        }
+        
+        buffer.LoadBytes(buffer.GenerateBytes());
+        buffer.ToRead();
+        List<PlayerAction> actions;
+
+        var amount = buffer.ReadInt(_minInputs, _maxInputs);
+        actions = new List<PlayerAction>(amount);
+        for (int i = 0; i < amount; i++) {
+            var code = (InputEnum)buffer.ReadInt(0, _inputCommands);
+            var number = buffer.ReadInt(_minInputNumber, _maxInputNumber);
+            var dT = buffer.ReadFloat(_minDt, _maxDT, _stepDT);
+            actions.Add(new PlayerAction(code, number, dT));
+        }
+        
+        actions.ForEach((a) => Debug.Log(a.inputCommand));
     }
 
 

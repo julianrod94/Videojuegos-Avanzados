@@ -5,12 +5,12 @@ using UnityEngine;
 
 namespace ChannelNS {
     public class Bitbuffer {
-        private static readonly float epsilon = 1E-3f;
+        private static readonly float epsilon = 5E-2f;
         private ulong _bits;
 
         private int _currentBitCount;
 
-        private MemoryStream buffer = new MemoryStream(100);
+        private MemoryStream buffer = new MemoryStream(10000);
 
         public void WriteBool(bool value) {
             WriteBit(value);
@@ -36,30 +36,33 @@ namespace ChannelNS {
 
         public void WriteInt(int value, int min, int max) {
             if (min >= max) throw new ArgumentException("min should be lower than max");
-            if (value > max || value < min) throw new ArgumentException("Value must be between min and max");
+            if (value > max || value < min) throw new ArgumentException(
+                "Value " + value + " must be between min " + min +"and max" + max);
             var bits = Mathf.CeilToInt(Mathf.Log(max - min + 1, 2));
             WriteBits(value - min, bits);
         }
 
         public void WriteFloatRounded(float value, float min, float max, float step) {
-            var newValue = Mathf.RoundToInt((value - min) / step) * step + min;
+            var newValue = Mathf.Round((value - min) / step) * step + min;
             WriteFloat(newValue, min, max, step);
         }
 
         public void WriteFloat(float value, float min, float max, float step) {
             if (min >= max) throw new ArgumentException("min should be lower than max");
-            if (value > max || value < min) throw new ArgumentException("Value must be between min and max");
+            if (value > max || value < min) throw new ArgumentException(
+                "Value " + value + " must be between min " + min +"and max" + max);
             var divisor = (max - min) / step;
-            if (Mathf.Abs(divisor - Mathf.RoundToInt(divisor)) > epsilon)
-                throw new ArgumentException("Range (" + min + "-" + max + ") must be divisible by step " + step);
+            if (Mathf.Abs(divisor - Mathf.Round(divisor)) > epsilon)
+                throw new ArgumentException("Range (" + min + "-" + max + ") must be divisible by step " + step + 
+                                            "epsilon " + Mathf.Abs(divisor - Mathf.Round(divisor)));
 
             divisor = (value - min) / step;
-            if (Mathf.Abs(divisor - Mathf.RoundToInt(divisor)) > epsilon)
+            if (Mathf.Abs(divisor - Mathf.Round(divisor)) > epsilon)
                 throw new ArgumentException("Value must be divisible by step " +
-                                            Mathf.Abs(divisor - Mathf.RoundToInt(divisor)));
+                                            Mathf.Abs(divisor - Mathf.Round(divisor)));
 
             var bits = Mathf.CeilToInt(Mathf.Log((max - min + 1) / step, 2));
-            var countedValue = Mathf.RoundToInt((value - min) / step);
+            var countedValue = (long)Mathf.Round((value - min) / step);
             WriteBits(countedValue, bits);
         }
 
@@ -107,16 +110,16 @@ namespace ChannelNS {
             if (min >= max) throw new ArgumentException("min should be lower than max");
             var intSize = Mathf.CeilToInt(Mathf.Log(max - min + 1, 2));
             var answer = (uint) ReadBits(intSize);
-            if (answer + min > max) throw new ArgumentException("value was greater than max");
+            if (answer + min > max) throw new ArgumentException("value " + (answer + min) + " was greater than max " + max);
             return (int) (answer + min);
         }
 
         public float ReadFloat(float min, float max, float step) {
             if (min >= max) throw new ArgumentException("min should be lower than max");
             var divisor = (max - min) / step;
-            if (Mathf.Abs(divisor - Mathf.RoundToInt(divisor)) > epsilon)
+            if (Mathf.Abs(divisor - Mathf.Round(divisor)) > epsilon)
                 throw new ArgumentException("Range (" + min + "-" + max + ") must be divisible by step " + step);
-            var floatSize = Mathf.CeilToInt(Mathf.Log((max - min) / step, 2));
+            var floatSize = Mathf.CeilToInt(Mathf.Log((max - min + 1) / step, 2));
             return min + ReadBits(floatSize) * step;
         }
 
@@ -147,7 +150,9 @@ namespace ChannelNS {
 
         private void WriteIfNecessary() {
             if (_currentBitCount < 32) return;
-            if (buffer.Position + 4 > buffer.Capacity) throw new InvalidOperationException("write buffer overflow");
+            if (buffer.Position + 4 > buffer.Capacity) {
+                throw new InvalidOperationException("write buffer overflow");
+            }
 
             ulong word = (uint) _bits;
             var a = (byte) word;
@@ -178,7 +183,7 @@ namespace ChannelNS {
 
         public void LoadBytes(byte[] bytes) {
             //TODO look for a better way for this
-            buffer = new MemoryStream(100);
+            buffer = new MemoryStream(10000);
             buffer.Write(bytes, 0, bytes.Length);
         }
     }

@@ -13,7 +13,7 @@ namespace StateNS {
         private readonly SortedDictionary<T, bool> _frames =
             new SortedDictionary<T, bool>(new WorldStateComparer());
 
-        private T _pastState;
+        public T PastState;
         private T _targetState;
         private float _time = -1;
         public int FrameBufferSize = 2;
@@ -41,12 +41,12 @@ namespace StateNS {
                 if (CurrentState == InterpolatorState.Uninitialized) return;
 
                 PickPastState();
-                if (_pastState == null) return;
+                if (PastState == null) return;
 
                 _time += deltaTime;
 
                 if (_targetState != null && _targetState.TimeStamp() < _time) {
-                    _pastState = _targetState;
+                    PastState = _targetState;
                     _targetState = default(T);
                 }
 
@@ -59,8 +59,8 @@ namespace StateNS {
                     _frames.Remove(nextState);
                 }
 
-                PresentState = _pastState.UpdateState(
-                    (_time - _pastState.TimeStamp()) / (_targetState.TimeStamp() - _pastState.TimeStamp()),
+                PresentState = PastState.UpdateState(
+                    (_time - PastState.TimeStamp()) / (_targetState.TimeStamp() - PastState.TimeStamp()),
                     _targetState
                 );
             }
@@ -77,8 +77,8 @@ namespace StateNS {
                 return;
             }
 
-            if (_targetState == null && _time - _pastState.TimeStamp() > MaxTimeUntilJump) {
-                _pastState = default(T);
+            if (_targetState == null && _time - PastState.TimeStamp() > MaxTimeUntilJump) {
+                PastState = default(T);
                 CurrentState = InterpolatorState.WaitingFirstFrame;
                 return;
             }
@@ -96,8 +96,8 @@ namespace StateNS {
         private void SetStateAndRemove(T newState) {
             if (newState != null) {
                 CurrentState = InterpolatorState.Interpolating;
-                _pastState = newState;
-                _time = _pastState.TimeStamp();
+                PastState = newState;
+                _time = PastState.TimeStamp();
                 _frames.Remove(newState);
             }
         }

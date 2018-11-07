@@ -96,7 +96,7 @@ namespace SenderStrategyNS {
                         break;
                     
                     default:
-                        Debug.Log("WTF " + command);
+                        Debug.LogError("WTF " + command);
                         break;
             }
         }
