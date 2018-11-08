@@ -54,7 +54,6 @@ public class ServerConnectionManager : MonoBehaviour {
     }
 
     private void addNewClient(Connection connection) {
-        Debug.Log("PLAUYER");
         ChannelManager newCM = new ChannelManager(server, connection.Ip, connection.Port);
         _conections.Add(_clients.Count, newCM);
         _clients.Add(connection, newCM);

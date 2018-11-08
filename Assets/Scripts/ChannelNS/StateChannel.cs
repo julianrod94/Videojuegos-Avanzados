@@ -26,6 +26,7 @@ namespace ChannelNS {
         public void StartSending() {
             Interpolator.StartInterpolating();
             TimerCallback tc = state => SendState();
+            Debug.Log("Sending for " + this.GetType());
             _timer = new Timer(tc, null, 0, _period);
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ChannelNS;
 using ChannelNS.Implementations.StateChannels;
 using SenderStrategyNS;
@@ -14,12 +15,13 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
     public Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
     public Dictionary<int, OtherPlayersChannel> playersChannel = new Dictionary<int, OtherPlayersChannel>();
     
-    private class OtherPlayersStatesBridge : IUnityBridgeState<OtherPlayersStates> {
+    public class OtherPlayersStatesBridge: IUnityBridgeState<OtherPlayersStates> {
 
         private int _playerTarget;
 
         public OtherPlayersStatesBridge(int target) {
             _playerTarget = target;
+            Debug.LogError("bridge for  " + target);
         }
         
         public OtherPlayersStates GetCurrentState() {
@@ -31,6 +33,10 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
                 }
             }
 
+            if (newDict.Count > 0) {
+                Debug.LogError("Sending to player  " + _playerTarget + " / " + newDict.First().Value.Position);
+            }
+            
             return new OtherPlayersStates(lastState.TimeStamp(), newDict);
         }
     }
@@ -41,15 +47,20 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
     }
 
     public void AddPlayer(GameObject go, ChannelManager cm) {
-        var id = players.Count;
-        var channel = new OtherPlayersChannel(
-            new OtherPlayersStatesBridge(id),
-            new TrivialStrategy(),
-            0.1f);
-        
-        playersChannel[id] = channel;
-        players[id] = go;
-        cm.RegisterChannel(200, channel);
+        lock (this) {
+            var id = players.Count;
+            var channel = new OtherPlayersChannel(
+                new OtherPlayersStatesBridge(id),
+                new TrivialStrategy(),
+                0.1f);
+
+            playersChannel[id] = channel;
+            players[id] = go;
+            Debug.LogError("NOW THERE ARE  " + players.Count );
+            cm.RegisterChannel(200, channel);
+            
+            channel.StartSending();
+        }
     }
 
 
