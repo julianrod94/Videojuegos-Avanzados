@@ -4,13 +4,14 @@ using UnityEngine;
 public class PlayerInput {
     public static int ApplyInput(GameObject gameObject, PlayerAction playerAction) {
         
-        float velocity = 5;
+        float velocity = 25;
         //Running was to easy to escape from the enemies
         float sprintFactor = 0f;
         float backwardsPercentage = 0.5f;
         float lateralPercentage = 0.8f;
     
         Vector3 movement = new Vector3();
+        gameObject.transform.rotation = playerAction.rotation;
         if (playerAction.inputCommand == InputEnum.Forward) {
             movement.z += velocity;
 //                if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {

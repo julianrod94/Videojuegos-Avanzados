@@ -30,22 +30,22 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
     // Update is called once per frame
     private void Update() {
         if (Input.GetKey(KeyCode.A)) {
-            _inputManager.SubmitInput(InputEnum.Left);
+            _inputManager.SubmitInput(InputEnum.Left, transform.rotation);
         }
 		
 		
         if (Input.GetKey(KeyCode.W)) {
-            _inputManager.SubmitInput(InputEnum.Forward);
+            _inputManager.SubmitInput(InputEnum.Forward, transform.rotation);
         }
 		
 		
         if (Input.GetKey(KeyCode.D)) {
-            _inputManager.SubmitInput(InputEnum.Right);
+            _inputManager.SubmitInput(InputEnum.Right, transform.rotation);
         }
 		
 		
         if (Input.GetKey(KeyCode.S)) {
-            _inputManager.SubmitInput(InputEnum.Back);
+            _inputManager.SubmitInput(InputEnum.Back, transform.rotation);
         }
 
         if (_inputManager.Count() > 0) {

@@ -15,11 +15,18 @@ namespace InputManagerNS {
         public InputEnum inputCommand;
         public int inputNumber;
         public float deltaTime;
+        public Quaternion rotation;
 
-        public PlayerAction(InputEnum inputCommand, int inputNumber, float deltaTime) {
+        public PlayerAction(
+            InputEnum inputCommand, 
+            int inputNumber, 
+            float deltaTime,
+            Quaternion rotation
+            ) {
             this.inputCommand = inputCommand;
             this.inputNumber = inputNumber;
             this.deltaTime = deltaTime;
+            this.rotation = rotation;
         }
 
         protected bool Equals(PlayerAction other) {
@@ -47,9 +54,9 @@ namespace InputManagerNS {
         private readonly SortedDictionary<PlayerAction, bool> _inputs =
             new SortedDictionary<PlayerAction, bool>(new PlayerActionComparer());
         
-        public void SubmitInput(InputEnum inputEnum) {
+        public void SubmitInput(InputEnum inputEnum, Quaternion rotation) {
             lock (this) {
-                _inputs[new PlayerAction(inputEnum, inputCounter++, Time.deltaTime)] = true;
+                _inputs[new PlayerAction(inputEnum, inputCounter++, Time.deltaTime, rotation)] = true;
             }
         }
         
