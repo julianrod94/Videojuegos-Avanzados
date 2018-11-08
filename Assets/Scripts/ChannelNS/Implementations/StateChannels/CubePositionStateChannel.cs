@@ -20,7 +20,10 @@ namespace ChannelNS.Implementations.StateChannels {
         private readonly int _minInputNumber = 0;
         private readonly int _maxInputNumber = 10000;
 
-        public CubePositionStateChannel(IUnityBridgeState<CubePosition> bridge, SenderStrategy strategy, float refreshTime) {
+        public CubePositionStateChannel(
+            IUnityBridgeState<CubePosition> bridge,
+            SenderStrategy strategy,
+            float refreshTime) {
             _bridge = bridge;
             setupStrategy(strategy);
             SetupPeriod((long) (refreshTime * 1000));

@@ -14,7 +14,7 @@ namespace ServerNS {
             channel.SetupSender(bytes => SendPacket(bytes, channel));
         }
 
-        public void SetupOtherServer(Server other) {
+        public void SetupOthererver(Server other) {
             _other = other;
         }
 

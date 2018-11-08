@@ -15,8 +15,8 @@ public class SetupEverything : MonoBehaviour {
 //        sender = new ServerNS.Server();
 //        receiver = new ServerNS.Server();
 //
-//        sender.SetupOtherServer(receiver);
-//        receiver.SetupOtherServer(sender);
+//        sender.SetupOthererver(receiver);
+//        receiver.SetupOthererver(sender);
 //
 //        if (instance == null)
 //

@@ -31,7 +31,9 @@ namespace ChannelNS {
 
         public override void Dispose() {
            base.Dispose();
-           _timer.Dispose();
+            if (_timer != null) {
+                _timer.Dispose();
+            }
         }
 
         public void SendState() {

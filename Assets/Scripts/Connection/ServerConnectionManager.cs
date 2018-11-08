@@ -7,7 +7,7 @@ using SenderStrategyNS;
 using UnityEngine;
 
 public class ServerConnectionManager : MonoBehaviour {
-    private struct Connection {
+    public struct Connection {
         private IPAddress ip;
         private int port;
 
