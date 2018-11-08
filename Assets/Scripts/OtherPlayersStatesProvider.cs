@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class OtherPlayersStatesProvider: MonoBehaviour {
     
-    private static OtherPlayersStatesProvider Instance;
+    public static OtherPlayersStatesProvider Instance;
     
     public OtherPlayersStates LastState;
     
@@ -49,6 +49,7 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
         
         playersChannel[id] = channel;
         players[id] = go;
+        cm.RegisterChannel(200, channel);
     }
 
 
