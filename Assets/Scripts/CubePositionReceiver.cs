@@ -21,8 +21,10 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
     private void Start() {
         _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
         _channel = new InputSequenceStateChannel((a) => { }, new DelayedStrategy(70));
-        SetupEverything.instance.receiver.RegisterChannel(0, _cubeChannel);
-        SetupEverything.instance.sender.RegisterChannel(2, _channel);
+//        SetupEverything.instance.receiver.RegisterChannel(0, _cubeChannel);
+//        SetupEverything.instance.sender.RegisterChannel(2, _channel);
+        SetupEverything.instance.receiver.RegisterChannel(_cubeChannel);
+        SetupEverything.instance.sender.RegisterChannel(_channel);
     }
 
     // Update is called once per frame
