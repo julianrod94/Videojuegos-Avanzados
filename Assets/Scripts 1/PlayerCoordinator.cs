@@ -22,10 +22,6 @@ public class PlayerCoordinator : MonoBehaviour {
         get { return instance; }
     }
 
-    private void OnDestroy() {
-        instance = null;
-    }
-
     public void Awake() {
         if (instance == null) {
             instance = this;
@@ -45,6 +41,8 @@ public class PlayerCoordinator : MonoBehaviour {
 
         RaycastHit hit;
         AudioManager.Instance.playerShoot();
+        
+        //TODO SHOOT AND MISS OR SHOOT AND NOT MISS
         if (Physics.Raycast(origin.transform.position, fwd, out hit, weaponRange)) {
             GameObject obj = hit.transform.gameObject;
             Debug.Log(obj.name);
