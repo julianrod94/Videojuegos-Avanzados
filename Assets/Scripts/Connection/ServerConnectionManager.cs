@@ -25,14 +25,15 @@ public class ServerConnectionManager : MonoBehaviour {
         }
     }
 
+    public GameObject playerPrefab;
     public static ServerConnectionManager Instance;
     
     public int Port;
     private Server server;
-    private List<Action<ChannelManager>> initializers = new List<Action<ChannelManager>>();
-    
     private readonly Dictionary<Connection, ChannelManager> _clients = new Dictionary<Connection, ChannelManager>();
-
+    private readonly Dictionary<int, ChannelManager> _conections = new Dictionary<int, ChannelManager>();
+    public int initializedPlayers = 0;
+    
     private void Awake() {
         if (Instance == null) {
             Instance = this;
@@ -46,10 +47,6 @@ public class ServerConnectionManager : MonoBehaviour {
         server.SetupServer(Port);
     }
 
-    public void AddInitializer(Action<ChannelManager> initializer) {
-        initializers.Add(initializer);
-    }
-
     public void sendToChannel(IPAddress ip, int port, byte[] packet) {
         Connection connection = new Connection(ip, port);
         if (!_clients.ContainsKey(connection)) addNewClient(connection);
@@ -57,9 +54,19 @@ public class ServerConnectionManager : MonoBehaviour {
     }
 
     private void addNewClient(Connection connection) {
+        Debug.Log("PLAUYER");
         ChannelManager newCM = new ChannelManager(server, connection.Ip, connection.Port);
-        initializers.ForEach((a) => a(newCM));
+        _conections.Add(_clients.Count, newCM);
         _clients.Add(connection, newCM);
+    }
+
+    private void FixedUpdate() {
+        while (initializedPlayers < _clients.Count) {
+            var cm = _conections[initializedPlayers];
+            var newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            newPlayer.GetComponent<PlayerMovementProvider>().SetupChannels(cm);
+            initializedPlayers++;
+        }
     }
 
     private void OnDestroy() {

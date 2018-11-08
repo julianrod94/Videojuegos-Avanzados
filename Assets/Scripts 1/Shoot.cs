@@ -7,7 +7,7 @@ public class Shoot : MonoBehaviour {
 	public float weaponRange = 50f;
 	void Update () {
 		if (Input.GetMouseButtonDown(0)) {
-			PlayerCoordinator.Instance.shoot(weaponRange,transform);
+//			PlayerCoordinator.Instance.shoot(weaponRange,transform);
 		}
 	}
 }

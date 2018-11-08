@@ -19,12 +19,7 @@ public class CubePositionProvider : MonoBehaviour, IUnityBridgeState<CubePositio
         return LastState;
     }
 
-    // Use this for initialization
-    private void Start() {
-        ServerConnectionManager.Instance.AddInitializer(SetupChannels);
-    }
-
-    void SetupChannels(ChannelManager cm) {
+    public void SetupChannels(ChannelManager cm) {
         _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
        cm.RegisterChannel(0, _cubeChannel);
         _cubeChannel.StartSending();
