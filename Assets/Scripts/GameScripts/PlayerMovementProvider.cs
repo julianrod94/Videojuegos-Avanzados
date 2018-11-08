@@ -25,12 +25,11 @@ public class PlayerMovementProvider: MonoBehaviour, IUnityBridgeState<CubePositi
 
     // Use this for initialization
     private void Start() {
-        ServerConnectionManager.Instance.AddInitializer(SetupChannels);
 	    // Obtenemos el RigidBody para hacer el salto posteriormente;
         GetComponent <Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; 
     }
 
-    void SetupChannels(ChannelManager cm) {
+    public void SetupChannels(ChannelManager cm) {
         _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
        cm.RegisterChannel(0, _cubeChannel);
         _cubeChannel.StartSending();
