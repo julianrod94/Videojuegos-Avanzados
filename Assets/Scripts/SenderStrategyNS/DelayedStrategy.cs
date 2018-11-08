@@ -11,10 +11,11 @@ namespace SenderStrategyNS {
         }
 
         public override void SendPackage(byte[] bytes) {
-            new Thread(() => {
+            WaitCallback wc = (state) => {
                 Thread.Sleep(_delay);
                 _sender(bytes);
-            }).Start();
+            };
+            ThreadPool.QueueUserWorkItem(wc);
         }
 
         public override void ReceivePackage(byte[] bytes) {

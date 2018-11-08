@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using ChannelNS;
 using ChannelNS.Implementations.StateChannels;
 using SenderStrategyNS;
@@ -12,6 +13,7 @@ public class ClientConnectionManager : MonoBehaviour {
     private Client client;
     public ChannelManager ChannelManager;
 
+    private Thread listenThread;
 
     public static ClientConnectionManager Instance;
     
@@ -23,6 +25,9 @@ public class ClientConnectionManager : MonoBehaviour {
             Debug.Log("CONNECTING");
             try {
                 client.Connect(ServerIp, ServerPort);
+                listenThread = new Thread(client.Listen);
+                listenThread.IsBackground = true;
+                listenThread.Start();
             } catch (Exception e) {
                 Debug.LogError(e);
             }
@@ -34,5 +39,9 @@ public class ClientConnectionManager : MonoBehaviour {
 
     public void sendToChannel(IPAddress ip, int port, byte[] packet) {
         ChannelManager.ReceivePacket(packet);
+    }
+
+    private void OnDestroy() {
+        listenThread.Abort();
     }
 }

@@ -22,7 +22,7 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
     private void Start() {
         _lastUpdatedState = new CubePosition(Time.time, transform.position, -1);
         _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
-        _channel = new InputSequenceStateChannel((a) => { }, new DelayedStrategy(70));
+        _channel = new InputSequenceStateChannel((a) => { },new TrivialStrategy());
         ClientConnectionManager.Instance.ChannelManager.RegisterChannel(0, _cubeChannel);
         ClientConnectionManager.Instance.ChannelManager.RegisterChannel(2, _channel);
     }
@@ -57,6 +57,7 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
         
         if (currentState != null) {
             transform.position = currentState.Position;
+            Debug.Log("SENT: " + currentState.LastInputApplied);
             _inputManager.EmptyUpTo(currentState.LastInputApplied);
             _lastUpdatedState = currentState;
         } else {
