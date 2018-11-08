@@ -52,12 +52,19 @@ namespace ChannelNS.Implementations.EventChannel {
             lock (this) {
                 try {
                     buffer.ToWrite();
+                    int inputToSend = data.Count;
                     if (data.Count > _maxInputs) {
-                        throw new ExecutionEngineException("Too many inputs on the queue");
+                        inputToSend = _maxInputs;
                     }
                     
-                    buffer.WriteInt(data.Count, _minInputs, _maxInputs);
+                    buffer.WriteInt(inputToSend, _minInputs, _maxInputs);
+                    int i = 0;
                     foreach (var playerAction in data) {
+                        if (i > _maxInputs) {
+                            break;
+                        }
+
+                        i++;
                         buffer.WriteInt((int)playerAction.inputCommand, 0, _inputCommands);
                         buffer.WriteInt(playerAction.inputNumber, _minInputNumber, _maxInputNumber);
                         buffer.WriteFloatRounded(playerAction.deltaTime, _minDt, _maxDT, _stepDT);

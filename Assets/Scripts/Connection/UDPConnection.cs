@@ -29,11 +29,12 @@ public abstract class UDPConnection {
     }
 
     public void SendPacket(byte[] data, IPAddress ip, int port) {
+        Debug.Log("SENDING to " + ip);
         try {
             client.Send(data, data.Length, new IPEndPoint(ip, port));
         }
         catch (Exception err) {
-            Debug.Log(err);
+            Debug.LogError(err);
         }
     }
 }

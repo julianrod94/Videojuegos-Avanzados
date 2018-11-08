@@ -8,7 +8,7 @@ public class Client : UDPConnection {
 
     public void Connect(string ServerIp, int ServerPort) {
         IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse(ServerIp), ServerPort);
-        client = new UdpClient(LocalPort);
+        client = new UdpClient();
     }
 
 

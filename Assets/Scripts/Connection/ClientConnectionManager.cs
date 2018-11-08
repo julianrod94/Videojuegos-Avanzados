@@ -17,10 +17,16 @@ public class ClientConnectionManager : MonoBehaviour {
     
     private void Awake() {
         if (Instance == null) {
-            Instance = null;
+            Instance = this;
             client = new Client(sendToChannel);
             ChannelManager = new ChannelManager(client, IPAddress.Parse(ServerIp), ServerPort);
-            client.Connect(ServerIp, ServerPort);
+            Debug.Log("CONNECTING");
+            try {
+                client.Connect(ServerIp, ServerPort);
+            } catch (Exception e) {
+                Debug.LogError(e);
+            }
+            Debug.Log("SUCCESFUL  " + client.LocalPort);
         } else {
             Destroy(this);
         }

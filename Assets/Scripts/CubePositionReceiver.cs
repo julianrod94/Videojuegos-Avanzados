@@ -54,7 +54,6 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
 
        _cubeChannel.Interpolator.Update(Time.deltaTime);
         currentState = _cubeChannel.Interpolator.PastState;
-        Debug.LogWarning(_lastUpdatedState);
         
         if (currentState != null) {
             transform.position = currentState.Position;
