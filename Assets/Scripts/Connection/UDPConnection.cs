@@ -11,19 +11,22 @@ public abstract class UDPConnection {
     private Action<IPAddress, int, byte[]> passPacket;
     protected UdpClient client;
 
+    public bool Listening = true;
+
     protected UDPConnection(Action<IPAddress, int, byte[]> passPacket) {
         this.passPacket = passPacket;
     }
 
     public void Listen() {
-        while (true) {
+        while (Listening) {
             try {
                 IPEndPoint senderIp = new IPEndPoint(IPAddress.Any, 0);
                 byte[] data = client.Receive(ref senderIp);
                 Debug.Log("PACKET RECEIVED" + senderIp.Address);
                 passPacket(senderIp.Address, senderIp.Port, data);
-            }
-            catch (Exception err) {
+            } catch (ThreadAbortException abort) {
+                throw;
+            } catch (Exception err) {
                 Debug.Log(err);
             }
         }

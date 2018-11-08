@@ -20,7 +20,7 @@ public class Server : UDPConnection {
     }
 
     public void Destroy() {
-        listenThread.Abort();
+        Listening = false;
     }
 
     // OnGUI
