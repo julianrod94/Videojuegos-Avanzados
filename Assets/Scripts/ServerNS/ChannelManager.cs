@@ -27,6 +27,7 @@ public class ChannelManager {
     }
 
     private void SendPacket(byte[] bytes, GenericChannel channel, IPAddress ip, int port) {
+        Debug.Log("Sending1 ack to ip: " + ip + " port:  " + port);
         _connection.SendPacket(ArrayUtils.AddByteToArray(bytes, _channelNumbers[channel]), ip, port);
     }
 

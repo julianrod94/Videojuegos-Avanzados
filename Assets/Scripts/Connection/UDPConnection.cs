@@ -20,7 +20,7 @@ public abstract class UDPConnection {
             try {
                 IPEndPoint senderIp = new IPEndPoint(IPAddress.Any, 0);
                 byte[] data = client.Receive(ref senderIp);
-                Debug.Log(senderIp.Address);
+                Debug.Log("PACKET RECEIVED" + senderIp.Address);
                 passPacket(senderIp.Address, senderIp.Port, data);
             }
             catch (Exception err) {
@@ -30,8 +30,8 @@ public abstract class UDPConnection {
     }
 
     public void SendPacket(byte[] data, IPAddress ip, int port) {
-        Debug.Log("SENDING to " + ip);
         try {
+            Debug.Log("Sending ack to ip: " + ip + " port:  " + port);
             client.Send(data, data.Length, new IPEndPoint(ip, port));
         }
         catch (Exception err) {

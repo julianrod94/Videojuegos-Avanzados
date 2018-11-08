@@ -14,7 +14,7 @@ namespace ChannelNS.Implementations.StateChannels {
         private readonly float _positionPrecision = 0.001f;
 
         private readonly float _timeStampMin = 0;
-        private readonly float _timeStampMax = 60;
+        private readonly float _timeStampMax = 600;
         private readonly float _timeStampPrecision = 1 / 60f;
         
         private readonly int _minInputNumber = 0;
@@ -53,6 +53,7 @@ namespace ChannelNS.Implementations.StateChannels {
         }
 
         protected override byte[] SerializeData(CubePosition data) {
+            Debug.Log("Sending3 ack to ip: ");
             lock (this) {
                 try {
                     buffer.ToWrite();

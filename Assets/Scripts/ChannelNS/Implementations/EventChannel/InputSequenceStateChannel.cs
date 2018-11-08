@@ -44,6 +44,7 @@ namespace ChannelNS.Implementations.EventChannel {
                     throw;
                 }
 
+                Debug.LogWarning(actions.Count);
                 return actions;
             }
         }

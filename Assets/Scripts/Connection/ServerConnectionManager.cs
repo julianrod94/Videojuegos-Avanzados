@@ -58,8 +58,11 @@ public class ServerConnectionManager : MonoBehaviour {
 
     private void addNewClient(Connection connection) {
         ChannelManager newCM = new ChannelManager(server, connection.Ip, connection.Port);
-        Debug.LogWarning(initializers.Count);
         initializers.ForEach((a) => a(newCM));
         _clients.Add(connection, newCM);
+    }
+
+    private void OnDestroy() {
+        server.Destroy();
     }
 }

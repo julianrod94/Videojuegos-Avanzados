@@ -19,6 +19,10 @@ public class Server : UDPConnection {
         listenThread.Start();
     }
 
+    public void Destroy() {
+        listenThread.Abort();
+    }
+
     // OnGUI
 //    void OnGUI()
 //    {
