@@ -21,10 +21,14 @@ public class CubePositionProvider : MonoBehaviour, IUnityBridgeState<CubePositio
 
     // Use this for initialization
     private void Start() {
+        ServerConnectionManager.Instance.AddInitializer(SetupChannels);
+    }
+
+    void SetupChannels(ChannelManager cm) {
         _cubeChannel = new CubePositionStateChannel(this, new DelayedStrategy(70), 0.1f);
-//        SetupEverything.instance.sender.RegisterChannel(0, _cubeChannel);
-        SetupEverything.instance.sender.RegisterChannel(_cubeChannel);
+       cm.RegisterChannel(0, _cubeChannel);
         _cubeChannel.StartSending();
+        
         
         _inputChannel = new InputSequenceStateChannel((a) => {
             foreach (var playerAction in a) {
@@ -32,8 +36,7 @@ public class CubePositionProvider : MonoBehaviour, IUnityBridgeState<CubePositio
             }
         }, new TrivialStrategy());
         
-//        SetupEverything.instance.receiver.RegisterChannel(2, _inputChannel);
-        SetupEverything.instance.receiver.RegisterChannel(_inputChannel);
+        cm.RegisterChannel(2, _inputChannel);
     }
 
     // Update is called once per frame

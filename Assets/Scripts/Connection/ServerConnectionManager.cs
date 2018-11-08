@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
+using ChannelNS;
 using ChannelNS.Implementations.StateChannels;
 using SenderStrategyNS;
 using UnityEngine;
@@ -23,13 +25,26 @@ public class ServerConnectionManager : MonoBehaviour {
         }
     }
 
+    public static ServerConnectionManager Instance;
+    
     public int Port;
     private Server server;
+    private List<Action<ChannelManager>> initializers = new List<Action<ChannelManager>>();
+    
     private readonly Dictionary<Connection, ChannelManager> _clients = new Dictionary<Connection, ChannelManager>();
 
     private void Awake() {
-        server = new Server(sendToChannel);
-        server.SetupServer(Port);
+        if (Instance == null) {
+            Instance = this;
+            server = new Server(sendToChannel);
+            server.SetupServer(Port);
+        } else {
+            Destroy(this);
+        }
+    }
+
+    public void AddInitializer(Action<ChannelManager> initializer) {
+        initializers.Add(initializer);
     }
 
     public void sendToChannel(IPAddress ip, int port, byte[] packet) {
@@ -40,7 +55,7 @@ public class ServerConnectionManager : MonoBehaviour {
 
     private void addNewClient(Connection connection) {
         ChannelManager newCM = new ChannelManager(server, connection.Ip, connection.Port);
-        newCM.RegisterChannel(new CubePositionStateChannel(new CubePositionProvider(), new TrivialStrategy(), 1000));
+        initializers.ForEach((a) => a(newCM));
         _clients.Add(connection, newCM);
     }
 }

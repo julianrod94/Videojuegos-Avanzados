@@ -8,7 +8,6 @@ using Utils;
 public class ChannelManager {
     private readonly Dictionary<GenericChannel, byte> _channelNumbers = new Dictionary<GenericChannel, byte>();
     private readonly Dictionary<byte, GenericChannel> _channels = new Dictionary<byte, GenericChannel>();
-    private byte _currentChannels;
     private UDPConnection _connection;
     private IPAddress ip;
     private int port;
@@ -19,11 +18,10 @@ public class ChannelManager {
         this.port = port;
     }
 
-    public void RegisterChannel(GenericChannel channel) {
-        _channelNumbers[channel] = _currentChannels;
-        _channels[_currentChannels] = channel;
+    public void RegisterChannel(byte number, GenericChannel channel) {
+        _channelNumbers[channel] = number;
+        _channels[number] = channel;
         channel.SetupSender(bytes => SendPacket(bytes, channel, ip, port));
-        _currentChannels++;
     }
 
     private void SendPacket(byte[] bytes, GenericChannel channel, IPAddress ip, int port) {

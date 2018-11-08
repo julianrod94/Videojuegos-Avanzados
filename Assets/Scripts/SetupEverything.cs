@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using ServerNS;
 public class SetupEverything : MonoBehaviour {
     public static SetupEverything
         instance; //Static instance of GameManager which allows it to be accessed by any other script.
@@ -10,10 +10,10 @@ public class SetupEverything : MonoBehaviour {
     public ChannelManager sender;
 
     //TODO MOVE TO CONNECTION MANAGER
-    // Use this for initialization
+//     Use this for initialization
 //    private void Awake() {
-//        sender = new ChannelManager();
-//        receiver = new ChannelManager();
+//        sender = new ServerNS.Server();
+//        receiver = new ServerNS.Server();
 //
 //        sender.SetupOtherServer(receiver);
 //        receiver.SetupOtherServer(sender);

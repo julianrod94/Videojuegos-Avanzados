@@ -17,8 +17,7 @@ public class TextReceiver : MonoBehaviour {
 		text = GetComponent<Text>();
 		_textChannel = new TextEventChannel(
 			data => { currentString = data.message; }, new TrivialStrategy());
-		SetupEverything.instance.receiver.RegisterChannel(_textChannel);
-//		SetupEverything.instance.receiver.RegisterChannel(1, _textChannel);
+		SetupEverything.instance.receiver.RegisterChannel(1, _textChannel);
 	}
 	
 	// Update is called once per frame

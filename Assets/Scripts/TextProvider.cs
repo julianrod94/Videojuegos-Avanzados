@@ -14,8 +14,7 @@ public class TextProvider : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		_textChannel = new TextEventChannel((s) => { }, new TrivialStrategy());
-//		SetupEverything.instance.sender.RegisterChannel(1, _textChannel);
-		SetupEverything.instance.sender.RegisterChannel(_textChannel);
+		SetupEverything.instance.sender.RegisterChannel(1, _textChannel);
 	}
 	
 	// Update is called once per frame

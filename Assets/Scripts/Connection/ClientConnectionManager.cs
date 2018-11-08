@@ -10,18 +10,23 @@ public class ClientConnectionManager : MonoBehaviour {
     public string ServerIp;
     public int ServerPort;
     private Client client;
-    private ChannelManager _channelManager;
+    public ChannelManager ChannelManager;
 
 
+    public static ClientConnectionManager Instance;
+    
     private void Awake() {
-        client = new Client(sendToChannel);
-        _channelManager = new ChannelManager(client, IPAddress.Parse(ServerIp), ServerPort);
-        _channelManager.RegisterChannel(new CubePositionStateChannel(new CubePositionProvider(), new TrivialStrategy(),
-            1000));
-        client.Connect(ServerIp, ServerPort);
+        if (Instance == null) {
+            Instance = null;
+            client = new Client(sendToChannel);
+            ChannelManager = new ChannelManager(client, IPAddress.Parse(ServerIp), ServerPort);
+            client.Connect(ServerIp, ServerPort);
+        } else {
+            Destroy(this);
+        }
     }
 
     public void sendToChannel(IPAddress ip, int port, byte[] packet) {
-        _channelManager.ReceivePacket(packet);
+        ChannelManager.ReceivePacket(packet);
     }
 }

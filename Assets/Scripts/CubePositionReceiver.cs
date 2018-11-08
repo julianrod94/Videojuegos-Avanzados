@@ -12,6 +12,7 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
     private InputSequenceStateChannel _channel;
     
     private CubePosition currentState;
+    private CubePosition _lastUpdatedState;
 
     public CubePosition GetCurrentState() {
         return currentState;
@@ -19,12 +20,11 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
 
     // Use this for initialization
     private void Start() {
+        _lastUpdatedState = new CubePosition(Time.time, transform.position, -1);
         _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
         _channel = new InputSequenceStateChannel((a) => { }, new DelayedStrategy(70));
-//        SetupEverything.instance.receiver.RegisterChannel(0, _cubeChannel);
-//        SetupEverything.instance.sender.RegisterChannel(2, _channel);
-        SetupEverything.instance.receiver.RegisterChannel(_cubeChannel);
-        SetupEverything.instance.sender.RegisterChannel(_channel);
+        ClientConnectionManager.Instance.ChannelManager.RegisterChannel(0, _cubeChannel);
+        ClientConnectionManager.Instance.ChannelManager.RegisterChannel(2, _channel);
     }
 
     // Update is called once per frame
@@ -54,9 +54,14 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
 
        _cubeChannel.Interpolator.Update(Time.deltaTime);
         currentState = _cubeChannel.Interpolator.PastState;
+        Debug.LogWarning(_lastUpdatedState);
+        
         if (currentState != null) {
             transform.position = currentState.Position;
             _inputManager.EmptyUpTo(currentState.LastInputApplied);
+            _lastUpdatedState = currentState;
+        } else {
+            transform.position = _lastUpdatedState.Position;
         }
         Predict();
     }
