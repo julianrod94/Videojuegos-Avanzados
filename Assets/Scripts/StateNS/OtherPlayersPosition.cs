@@ -15,8 +15,14 @@ namespace StateNS {
 
         public OtherPlayersStates UpdateState(float progression, OtherPlayersStates target) {
             var newDic = new Dictionary<int, OtherPlayerState>();
-            foreach (var kp in _states) {
-                newDic[kp.Key] = kp.Value.UpdateState(progression, target._states[kp.Key]);
+            foreach (var kp in target._states) {
+                if (target._states.ContainsKey(kp.Key)) {
+                    if (_states.ContainsKey(kp.Key)) {
+                        newDic[kp.Key] = _states[kp.Key].UpdateState(progression, kp.Value);
+                    } else {
+                        newDic[kp.Key] = target._states[kp.Key];
+                    }
+                }
             }
 
             return new OtherPlayersStates(_timeStamp, newDic);

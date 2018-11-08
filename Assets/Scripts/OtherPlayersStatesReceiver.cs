@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class OtherPlayersStatesReceiver: MonoBehaviour {
 
-    public GameObject playerPrefab;
+    public GameObject otherPlayerPrefab;
     private static OtherPlayersStatesReceiver Instance;
     
     public Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
@@ -17,9 +17,8 @@ public class OtherPlayersStatesReceiver: MonoBehaviour {
         Instance = this;
     }
 
-    public void AddPlayer(GameObject go) {
-        Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        var id = players.Count;
+    public void AddPlayer(int id) {
+        GameObject go = Instantiate(otherPlayerPrefab, Vector3.zero, Quaternion.identity);
         players[id] = go;
     }
     
@@ -36,6 +35,9 @@ public class OtherPlayersStatesReceiver: MonoBehaviour {
         
         if (currentState != null) {
             foreach (var pState in currentState._states) {
+                if (!players.ContainsKey(pState.Key)) {
+                    AddPlayer(pState.Key);
+                }
                 var po = players[pState.Key];
                 po.transform.position = pState.Value.Position;
                 po.transform.rotation = pState.Value.Rotation;
