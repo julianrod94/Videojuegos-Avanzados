@@ -57,7 +57,6 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
         
         if (currentState != null) {
             transform.position = currentState.Position;
-            Debug.Log("SENT: " + currentState.LastInputApplied);
             _inputManager.EmptyUpTo(currentState.LastInputApplied);
             _lastUpdatedState = currentState;
         } else {

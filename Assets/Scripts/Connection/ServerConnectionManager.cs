@@ -63,7 +63,7 @@ public class ServerConnectionManager : MonoBehaviour {
     private void FixedUpdate() {
         while (initializedPlayers < _clients.Count) {
             var cm = _conections[initializedPlayers];
-            var newPlayer = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            var newPlayer = Instantiate(playerPrefab);
             OtherPlayersStatesProvider.Instance.AddPlayer(newPlayer, cm);
             newPlayer.GetComponent<PlayerMovementProvider>().SetupChannels(cm);
             initializedPlayers++;

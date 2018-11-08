@@ -17,14 +17,15 @@ public class OtherPlayersStatesReceiver: MonoBehaviour {
         Instance = this;
     }
 
-    public void AddPlayer(int id) {
-        GameObject go = Instantiate(otherPlayerPrefab, Vector3.zero, Quaternion.identity);
+    public void AddPlayer(int id, Vector3 position) {
+        GameObject go = Instantiate(otherPlayerPrefab);
+        go.transform.position = position;
         players[id] = go;
     }
     
     private void Start() {
         _channel = new OtherPlayersChannel(null, new TrivialStrategy(), 0.1f);
-        ClientConnectionManager.Instance.ChannelManager.RegisterChannel(0, _channel);
+        ClientConnectionManager.Instance.ChannelManager.RegisterChannel(200, _channel);
         _channel.Interpolator.StartInterpolating();
     }
 
@@ -35,8 +36,9 @@ public class OtherPlayersStatesReceiver: MonoBehaviour {
         
         if (currentState != null) {
             foreach (var pState in currentState._states) {
+                Debug.LogError("STATE: " + pState.Key + "-" + pState.Value.Position);
                 if (!players.ContainsKey(pState.Key)) {
-                    AddPlayer(pState.Key);
+                    AddPlayer(pState.Key, pState.Value.Position);
                 }
                 var po = players[pState.Key];
                 po.transform.position = pState.Value.Position;

@@ -60,7 +60,6 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<CubePositi
         
         if (currentState != null) {
             transform.position = currentState.Position;
-            Debug.Log("SENT: " + currentState.LastInputApplied);
             _inputManager.EmptyUpTo(currentState.LastInputApplied);
             _lastUpdatedState = currentState;
         } else {

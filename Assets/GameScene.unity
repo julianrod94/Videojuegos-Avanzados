@@ -122,6 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 19086459}
   - component: {fileID: 19086458}
+  - component: {fileID: 19086460}
   m_Layer: 0
   m_Name: ConnectionManagerClient
   m_TagString: Untagged
@@ -155,6 +156,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &19086460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 19086457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 200ddeb12d8e41b9a5949da7bd11c324, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  otherPlayerPrefab: {fileID: 1027560880124502, guid: 2c06281bec3d97c428e96525bdeb8ec5,
+    type: 2}
 --- !u!1001 &79097760
 Prefab:
   m_ObjectHideFlags: 0

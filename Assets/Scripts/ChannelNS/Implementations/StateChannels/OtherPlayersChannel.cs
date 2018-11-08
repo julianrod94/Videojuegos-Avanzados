@@ -37,6 +37,7 @@ namespace ChannelNS.Implementations.StateChannels {
         }
 
         protected override OtherPlayersStates DeserializeData(byte[] bytes) {
+            Debug.LogError("DSADSADSA");
             lock (this) {
                 Dictionary<int, OtherPlayerState> actions;
                 float timeStamp;
@@ -77,6 +78,7 @@ namespace ChannelNS.Implementations.StateChannels {
         }
 
         protected override byte[] SerializeData(OtherPlayersStates data) {
+            Debug.LogError("ewqewqewqewq");
             lock (this) {
                 try {
                     

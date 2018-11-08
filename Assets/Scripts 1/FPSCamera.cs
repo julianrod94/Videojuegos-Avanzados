@@ -49,9 +49,11 @@ public class FPSCamera : MonoBehaviour {
        
 		// Una vez listos los cálculos de rotacion, asignamos esa rotacion a los objetos
         transform.localRotation = nuevaRotacionPlayer;
-		camara.transform.localRotation = nuevaRotacionCamara;
-        
-		// Checkeamos el estado de bloque del cursor
+	    if (camara != null) {
+		    camara.transform.localRotation = nuevaRotacionCamara;
+	    }
+
+	    // Checkeamos el estado de bloque del cursor
 		if (bloquearCursor == true ) DetectarBloqueoDelMouse();
     }
 
