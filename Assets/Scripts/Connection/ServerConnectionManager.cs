@@ -37,10 +37,13 @@ public class ServerConnectionManager : MonoBehaviour {
         if (Instance == null) {
             Instance = this;
             server = new Server(sendToChannel);
-            server.SetupServer(Port);
         } else {
             Destroy(this);
         }
+    }
+
+    private void Start() {
+        server.SetupServer(Port);
     }
 
     public void AddInitializer(Action<ChannelManager> initializer) {
@@ -55,6 +58,7 @@ public class ServerConnectionManager : MonoBehaviour {
 
     private void addNewClient(Connection connection) {
         ChannelManager newCM = new ChannelManager(server, connection.Ip, connection.Port);
+        Debug.LogWarning(initializers.Count);
         initializers.ForEach((a) => a(newCM));
         _clients.Add(connection, newCM);
     }

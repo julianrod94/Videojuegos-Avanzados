@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using ChannelNS;
+using UnityEngine;
 using Utils;
 
 public class ChannelManager {
@@ -19,6 +20,7 @@ public class ChannelManager {
     }
 
     public void RegisterChannel(byte number, GenericChannel channel) {
+        Debug.LogWarning("REGISTERING CHANNEL" + number);
         _channelNumbers[channel] = number;
         _channels[number] = channel;
         channel.SetupSender(bytes => SendPacket(bytes, channel, ip, port));
