@@ -35,7 +35,7 @@ public class PlayerEventClient: MonoBehaviour {
                 Debug.Log(obj.name);
                 switch (obj.tag) {
                     case "Enemy":
-                        var id = GetComponent<OtherPlayer>().id;
+                        var id = obj.GetComponent<OtherPlayer>().id;
                         _playerEventChannel.SendEvent(PlayerEvent.Hit(id));
                         return;
                 }
