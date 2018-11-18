@@ -61,7 +61,7 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
 
 
     public void DamagePlayer(int id) {
-        players[id].GetComponent<PlayerEventServer>().Damage();
+        players[id].Damage();
     }
     
     private void FixedUpdate() {
