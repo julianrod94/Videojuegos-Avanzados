@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿﻿using System.Collections;
 using System.Collections.Generic;
 using ChannelNS;
 using ChannelNS.Implementations.EventChannel;
@@ -11,7 +11,7 @@ using UnityEngine;
 public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<CubePosition> {
     private InputManager _inputManager = new InputManager();
     private StateChannel<CubePosition> _cubeChannel;
-    private InputSequenceStateChannel _inputChannel;
+    private InputSequenceStateChannel _channel;
     
     private CubePosition currentState;
     private CubePosition _lastUpdatedState;
@@ -22,11 +22,11 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<CubePositi
 
     // Use this for initialization
     private void Start() {
-        _lastUpdatedState = new CubePosition(Time.time, transform.position, transform.rotation, -1);
+        _lastUpdatedState = new CubePosition(Time.time, transform.position, -1);
         _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
-        _inputChannel = new InputSequenceStateChannel((a) => { },new TrivialStrategy());
-        ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerPositionChannel, _cubeChannel);
-        ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerInputChannel, _inputChannel);
+        _channel = new InputSequenceStateChannel((a) => { },new TrivialStrategy());
+        ClientConnectionManager.Instance.ChannelManager.RegisterChannel(0, _cubeChannel);
+        ClientConnectionManager.Instance.ChannelManager.RegisterChannel(2, _channel);
         GetComponent <Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; 
     }
 
@@ -52,7 +52,7 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<CubePositi
         }
 
         if (_inputManager.Count() > 0) {
-            _inputChannel.SendEvent(_inputManager.Inputs());
+            _channel.SendEvent(_inputManager.Inputs());
         }
 
        _cubeChannel.Interpolator.Update(Time.deltaTime);

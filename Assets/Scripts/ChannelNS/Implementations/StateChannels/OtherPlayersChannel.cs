@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using InputManagerNS;
 using SenderStrategyNS;
@@ -76,6 +76,7 @@ namespace ChannelNS.Implementations.StateChannels {
         }
 
         protected override byte[] SerializeData(OtherPlayersStates data) {
+            Debug.LogError("ewqewqewqewq");
             lock (this) {
                 try {
                     

@@ -1,11 +1,11 @@
-﻿using System;
+﻿﻿using System;
 using System.Text;
 using ChannelNS;
 using SenderStrategyNS;
 using UnityEngine;
 
 public class PlayerEventChannel: EventChannel<PlayerEvent> {
-    private readonly int _playerEvents = Enum.GetValues(typeof(PlayerEvent.Type)).Length;
+    private readonly int _playerEvents = Enum.GetValues(typeof(PlayerEvent)).Length;
     
     private readonly float _minRot = 0;
     private readonly float _maxRot = 360;
