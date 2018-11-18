@@ -21,7 +21,6 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
 
         public OtherPlayersStatesBridge(int target) {
             _playerTarget = target;
-            Debug.LogError("bridge for  " + target);
         }
         
         public OtherPlayersStates GetCurrentState() {
@@ -33,10 +32,6 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
                 }
             }
 
-            if (newDict.Count > 0) {
-                Debug.LogError("Sending to player  " + _playerTarget + " / " + newDict.First().Value.Position);
-            }
-            
             return new OtherPlayersStates(lastState.TimeStamp(), newDict);
         }
     }

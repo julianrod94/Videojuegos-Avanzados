@@ -13,7 +13,7 @@ namespace StateNS {
         public OtherPlayerState UpdateState(float progression, OtherPlayerState target) {
             return new OtherPlayerState(
                 Vector3.Lerp(Position, target.Position, progression),
-                Quaternion.Lerp(Rotation, target.Rotation, progression)
+                target.Rotation
                 );
         }
     }

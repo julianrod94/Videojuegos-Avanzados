@@ -20,7 +20,7 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
 
     // Use this for initialization
     private void Start() {
-        _lastUpdatedState = new CubePosition(Time.time, transform.position, -1);
+        _lastUpdatedState = new CubePosition(Time.time, transform.position, transform.rotation, -1);
         _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
         _channel = new InputSequenceStateChannel((a) => { },new TrivialStrategy());
         ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerPositionChannel, _cubeChannel);

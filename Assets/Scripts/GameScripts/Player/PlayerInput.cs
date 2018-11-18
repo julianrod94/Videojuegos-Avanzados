@@ -11,7 +11,6 @@ public class PlayerInput {
         float lateralPercentage = 0.8f;
     
         Vector3 movement = new Vector3();
-        gameObject.transform.rotation = playerAction.rotation;
         if (playerAction.inputCommand == InputEnum.Forward) {
             movement.z += velocity;
 //                if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {

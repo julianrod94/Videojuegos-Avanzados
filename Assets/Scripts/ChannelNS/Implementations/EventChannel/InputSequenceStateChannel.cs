@@ -17,9 +17,7 @@ namespace ChannelNS.Implementations.EventChannel {
         private readonly float _maxDT = 1/10f;
         private readonly float _stepDT = 1/100f;
 
-        private readonly float _minRot = 0;
-        private readonly float _maxRot = 360;
-        private readonly float _stepRot = 0.2f;
+
         
 
         private readonly int _inputCommands = Enum.GetValues(typeof(InputEnum)).Length;
@@ -42,10 +40,7 @@ namespace ChannelNS.Implementations.EventChannel {
                         var code = (InputEnum)buffer.ReadInt(0, _inputCommands);
                         var number = buffer.ReadInt(_minInputNumber, _maxInputNumber);
                         var dT = buffer.ReadFloat(_minDt, _maxDT, _stepDT);
-                        var rotX = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
-                        var rotY = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
-                        var rotZ = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
-                        actions.Add(new PlayerAction(code, number, dT, Quaternion.Euler(rotX, rotY, rotZ)));
+                        actions.Add(new PlayerAction(code, number, dT));
                     }
                 } catch (Exception e) {
                     Debug.LogError(e);
@@ -77,10 +72,6 @@ namespace ChannelNS.Implementations.EventChannel {
                         buffer.WriteInt((int)playerAction.inputCommand, 0, _inputCommands);
                         buffer.WriteInt(playerAction.inputNumber, _minInputNumber, _maxInputNumber);
                         buffer.WriteFloatRounded(playerAction.deltaTime, _minDt, _maxDT, _stepDT);
-                        var euler = playerAction.rotation.eulerAngles;
-                        buffer.WriteFloatRounded(euler.x, _minRot, _maxRot, _stepRot);
-                        buffer.WriteFloatRounded(euler.y, _minRot, _maxRot, _stepRot);
-                        buffer.WriteFloatRounded(euler.z, _minRot, _maxRot, _stepRot);
                     }
                 } catch (Exception e) {
                     Debug.LogError(e);

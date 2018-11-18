@@ -115,9 +115,9 @@ public class BitbufferTest {
         Bitbuffer buffer = new Bitbuffer();
         var data = new List<PlayerAction>();
         
-        data.Add(new PlayerAction(InputEnum.Left, 1, 0.2f, Quaternion.identity));
-        data.Add(new PlayerAction(InputEnum.Right, 2, 0.2f, Quaternion.identity));
-        data.Add(new PlayerAction(InputEnum.Forward, 3, 0.2f, Quaternion.identity));
+        data.Add(new PlayerAction(InputEnum.Left, 1, 0.2f));
+        data.Add(new PlayerAction(InputEnum.Right, 2, 0.2f));
+        data.Add(new PlayerAction(InputEnum.Forward, 3, 0.2f));
         
         buffer.ToWrite();
         buffer.WriteInt(data.Count, _minInputs, _maxInputs);
@@ -137,7 +137,7 @@ public class BitbufferTest {
             var code = (InputEnum)buffer.ReadInt(0, _inputCommands);
             var number = buffer.ReadInt(_minInputNumber, _maxInputNumber);
             var dT = buffer.ReadFloat(_minDt, _maxDT, _stepDT);
-            actions.Add(new PlayerAction(code, number, dT, Quaternion.identity));
+            actions.Add(new PlayerAction(code, number, dT));
         }
         
         actions.ForEach((a) => Debug.Log(a.inputCommand));

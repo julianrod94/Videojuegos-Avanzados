@@ -22,7 +22,6 @@ public class ClientConnectionManager : MonoBehaviour {
             Instance = this;
             client = new Client(sendToChannel);
             ChannelManager = new ChannelManager(client, IPAddress.Parse(ServerIp), ServerPort);
-            Debug.Log("CONNECTING");
             try {
                 client.Connect(ServerIp, ServerPort);
                 listenThread = new Thread(client.Listen);
