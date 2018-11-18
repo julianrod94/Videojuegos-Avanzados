@@ -73,9 +73,9 @@ namespace ChannelNS.Implementations.StateChannels {
                     buffer.WriteFloatRounded(data.Position.x, _positionMin, _positionMax, _positionPrecision);
                     buffer.WriteFloatRounded(data.Position.y, _positionMin, _positionMax, _positionPrecision);
                     buffer.WriteFloatRounded(data.Position.z, _positionMin, _positionMax, _positionPrecision);
-                    buffer.WriteFloatRounded(data.Rotation.eulerAngles.x%360, _minRot, _maxRot, _stepRot);
-                    buffer.WriteFloatRounded(data.Rotation.eulerAngles.y%360, _minRot, _maxRot, _stepRot);
-                    buffer.WriteFloatRounded(data.Rotation.eulerAngles.z%360, _minRot, _maxRot, _stepRot);
+                    buffer.WriteFloatRounded(Mathf.Abs(data.Rotation.eulerAngles.x%360), _minRot, _maxRot, _stepRot);
+                    buffer.WriteFloatRounded(Mathf.Abs(data.Rotation.eulerAngles.y%360), _minRot, _maxRot, _stepRot);
+                    buffer.WriteFloatRounded(Mathf.Abs(data.Rotation.eulerAngles.z%360), _minRot, _maxRot, _stepRot);
                     buffer.WriteFloatRounded(data.TimeStamp(), _timeStampMin, _timeStampMax, _timeStampPrecision);
                     buffer.WriteInt(data.LastInputApplied, _minInputNumber, _maxInputNumber);
                 } catch (Exception e) {

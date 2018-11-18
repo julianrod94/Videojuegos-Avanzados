@@ -94,9 +94,9 @@ namespace ChannelNS.Implementations.StateChannels {
                         buffer.WriteFloatRounded(pData.Position.x, _positionMin, _positionMax, _positionPrecision);
                         buffer.WriteFloatRounded(pData.Position.y, _positionMin, _positionMax, _positionPrecision);
                         buffer.WriteFloatRounded(pData.Position.z, _positionMin, _positionMax, _positionPrecision);
-                        buffer.WriteFloatRounded(pData.Rotation.x, _minRot, _maxRot, _stepRot);
-                        buffer.WriteFloatRounded(pData.Rotation.y, _minRot, _maxRot, _stepRot);
-                        buffer.WriteFloatRounded(pData.Rotation.z, _minRot, _maxRot, _stepRot);
+                        buffer.WriteFloatRounded(Mathf.Abs(pData.Rotation.x%360), _minRot, _maxRot, _stepRot);
+                        buffer.WriteFloatRounded(Mathf.Abs(pData.Rotation.y%360), _minRot, _maxRot, _stepRot);
+                        buffer.WriteFloatRounded(Mathf.Abs(pData.Rotation.z%360), _minRot, _maxRot, _stepRot);
                     }
                 } catch (Exception e) {
                     Debug.LogError(e);
