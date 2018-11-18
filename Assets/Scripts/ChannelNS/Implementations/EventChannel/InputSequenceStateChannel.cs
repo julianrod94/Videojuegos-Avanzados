@@ -46,8 +46,6 @@ namespace ChannelNS.Implementations.EventChannel {
                     Debug.LogError(e);
                     throw;
                 }
-
-                Debug.LogWarning(actions.Count);
                 return actions;
             }
         }

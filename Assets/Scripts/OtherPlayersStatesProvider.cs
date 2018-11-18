@@ -12,8 +12,9 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
     
     public OtherPlayersStates LastState;
     
-    public Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
+    public Dictionary<int, PlayerEventServer> players = new Dictionary<int, PlayerEventServer>();
     public Dictionary<int, OtherPlayersChannel> playersChannel = new Dictionary<int, OtherPlayersChannel>();
+
     
     public class OtherPlayersStatesBridge: IUnityBridgeState<OtherPlayersStates> {
 
@@ -41,7 +42,7 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
         Instance = this;
     }
 
-    public void AddPlayer(GameObject go, ChannelManager cm) {
+    public void AddPlayer(PlayerEventServer go, ChannelManager cm) {
         lock (this) {
             var id = players.Count;
             var channel = new OtherPlayersChannel(

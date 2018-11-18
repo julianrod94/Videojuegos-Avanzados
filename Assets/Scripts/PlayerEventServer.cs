@@ -21,7 +21,6 @@ public class PlayerEventServer: MonoBehaviour {
                 
             case PlayerEvent.Type.Shoot:
                 Debug.Log("player " + _otherPlayer.id + " shoted and missed");
-                OtherPlayersStatesProvider.Instance.DamagePlayer(pEvent.player);
                 break;
                 
                 case PlayerEvent.Type.ThrowGranade:
