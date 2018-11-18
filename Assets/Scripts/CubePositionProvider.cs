@@ -21,7 +21,7 @@ public class CubePositionProvider : MonoBehaviour, IUnityBridgeState<CubePositio
 
     public void SetupChannels(ChannelManager cm) {
         _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
-       cm.RegisterChannel(0, _cubeChannel);
+       cm.RegisterChannel((int)RegisteredChannels.PlayerPositionChannel, _cubeChannel);
         _cubeChannel.StartSending();
         
         
@@ -31,7 +31,7 @@ public class CubePositionProvider : MonoBehaviour, IUnityBridgeState<CubePositio
             }
         }, new TrivialStrategy());
         
-        cm.RegisterChannel(2, _inputChannel);
+        cm.RegisterChannel((int)RegisteredChannels.PlayerInputChannel, _inputChannel);
     }
 
     // Update is called once per frame

@@ -57,13 +57,17 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
             playersChannel[id] = channel;
             players[id] = go;
             Debug.LogError("NOW THERE ARE  " + players.Count );
-            cm.RegisterChannel(200, channel);
+            cm.RegisterChannel((int)RegisteredChannels.OtherPlayersChannel, channel);
             
             channel.StartSending();
         }
     }
 
 
+    public void DamagePlayer(int id) {
+        players[id].GetComponent<PlayerEventServer>().Damage();
+    }
+    
     private void FixedUpdate() {
         var newDict = new Dictionary<int, OtherPlayerState>();
         foreach (var keyValuePair in players) {

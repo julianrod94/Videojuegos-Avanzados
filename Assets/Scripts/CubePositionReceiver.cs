@@ -23,8 +23,8 @@ public class CubePositionReceiver : MonoBehaviour, IUnityBridgeState<CubePositio
         _lastUpdatedState = new CubePosition(Time.time, transform.position, -1);
         _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
         _channel = new InputSequenceStateChannel((a) => { },new TrivialStrategy());
-        ClientConnectionManager.Instance.ChannelManager.RegisterChannel(0, _cubeChannel);
-        ClientConnectionManager.Instance.ChannelManager.RegisterChannel(2, _channel);
+        ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerPositionChannel, _cubeChannel);
+        ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerInputChannel, _channel);
     }
 
     // Update is called once per frame

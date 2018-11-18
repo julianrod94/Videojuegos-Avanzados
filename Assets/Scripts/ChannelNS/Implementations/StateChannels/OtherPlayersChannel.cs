@@ -56,7 +56,6 @@ namespace ChannelNS.Implementations.StateChannels {
                         var posY = buffer.ReadFloat(_positionMin, _positionMax, _positionPrecision);
                         var posZ = buffer.ReadFloat(_positionMin, _positionMax, _positionPrecision);
                         
-                        
                         var rotX = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
                         var rotY = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
                         var rotZ = buffer.ReadFloat(_minRot, _maxRot, _stepRot);

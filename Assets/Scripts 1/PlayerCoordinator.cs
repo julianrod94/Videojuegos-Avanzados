@@ -30,7 +30,7 @@ public class PlayerCoordinator : MonoBehaviour {
         }
     }
 
-    public void shoot(float weaponRange,Transform origin) {
+    public void shoot(float weaponRange, Transform origin) {
         if (holding) {
             dropBall();
         }
