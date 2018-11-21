@@ -12,7 +12,7 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
     
     public OtherPlayersStates LastState;
     
-    public Dictionary<int, PlayerEventServer> players = new Dictionary<int, PlayerEventServer>();
+    public Dictionary<int, Health> players = new Dictionary<int, Health>();
     public Dictionary<int, OtherPlayersChannel> playersChannel = new Dictionary<int, OtherPlayersChannel>();
 
     
@@ -42,7 +42,7 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
         Instance = this;
     }
 
-    public int AddPlayer(PlayerEventServer go, ChannelManager cm) {
+    public void AddPlayer(Health health, ChannelManager cm) {
         lock (this) {
             //TODO Whathappens if many discconect and reconnect
             var id = players.Count;
@@ -52,18 +52,19 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
                 0.1f);
 
             playersChannel[id] = channel;
-            players[id] = go;
+            players[id] = health;
             Debug.LogError("NOW THERE ARE  " + players.Count );
             cm.RegisterChannel((int)RegisteredChannels.OtherPlayersChannel, channel);
             
             channel.StartSending();
-            return id;
         }
     }
 
 
-    public void DamagePlayer(int id) {
-        players[id].Damage();
+    public void DamagePlayer(int id)
+    {
+        Health playerHealth = players[id];
+        playerHealth.Damage(playerHealth.GetCurrentHealth() - 1);
     }
     
     private void FixedUpdate() {
