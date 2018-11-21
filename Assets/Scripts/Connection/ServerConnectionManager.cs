@@ -65,6 +65,7 @@ public class ServerConnectionManager : MonoBehaviour {
             var newPlayer = Instantiate(playerPrefab);
             var health = newPlayer.GetComponent<Health>();
             var id = OtherPlayersStatesProvider.Instance.AddPlayer(health, cm);
+            newPlayer.GetComponent<OtherPlayer>().id = id;
             newPlayer.GetComponent<PlayerMovementProvider>().SetupChannels(cm);
             newPlayer.GetComponent<PlayerEventServer>().SetupChannels(cm);
             GrenadeStatesProvider.Instance.SetupChannel(id, cm);
