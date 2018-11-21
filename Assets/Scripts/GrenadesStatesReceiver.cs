@@ -22,7 +22,6 @@ public class GrenadesStatesReceiver: MonoBehaviour {
     public void AddGrenade(int id, Vector3 position) {
         GameObject go = Instantiate(grenadePrefab);
         activeGrenades++;
-        go.GetComponent<OtherPlayer>().id = id;
         go.transform.position = position;
         grenades[id] = go;
     }

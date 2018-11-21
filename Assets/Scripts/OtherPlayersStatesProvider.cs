@@ -42,7 +42,7 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
         Instance = this;
     }
 
-    public void AddPlayer(Health health, ChannelManager cm) {
+    public int AddPlayer(Health health, ChannelManager cm) {
         lock (this) {
             //TODO Whathappens if many discconect and reconnect
             var id = players.Count;
@@ -57,6 +57,8 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
             cm.RegisterChannel((int)RegisteredChannels.OtherPlayersChannel, channel);
             
             channel.StartSending();
+
+            return id;
         }
     }
 

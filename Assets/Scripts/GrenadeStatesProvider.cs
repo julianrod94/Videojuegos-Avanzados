@@ -12,7 +12,9 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
     public static GrenadeStatesProvider Instance;
     public GrenadesState LastState;
     private Queue<initialConditions> _toInstantiate = new Queue<initialConditions>();
-        
+    private Dictionary<int, GrenadesChannel> _channels = new Dictionary<int, GrenadesChannel>();    
+    
+    
     private struct initialConditions {
         public initialConditions(int playerId, Quaternion rotation) {
             this.playerId = playerId;
@@ -25,7 +27,6 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
 
     
     public Dictionary<int, GrenadeBehaviour> grenades = new Dictionary<int, GrenadeBehaviour>();
-    private GrenadesChannel _channel;
     private void Awake() {
         Instance = this;
     }
@@ -34,9 +35,11 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
         return LastState;
     }
 
-    public void SetupChannels(ChannelManager cm) {
-        _channel = new GrenadesChannel(this, new TrivialStrategy(), 1/30f);
-        cm.RegisterChannel((int)RegisteredChannels.GrenadeStatesChannel, _channel);
+    public void SetupChannel(int playerID, ChannelManager cm) {
+        var channel = new GrenadesChannel(this, new TrivialStrategy(), 1/30f);
+        _channels[playerID] = channel;
+        cm.RegisterChannel((int)RegisteredChannels.GrenadeStatesChannel, channel);
+        channel.StartSending();
     }
 
     private void FixedUpdate() {
@@ -62,5 +65,10 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
     public void GenerateGrenade(int playerId, Vector3 rotation) {
         _toInstantiate.Enqueue(new initialConditions(playerId, Quaternion.Euler(rotation))); 
     }
-    
+
+    private void OnDestroy() {
+        foreach (var keyValuePair in _channels) {
+            keyValuePair.Value.Dispose();
+        }
+    }
 }
