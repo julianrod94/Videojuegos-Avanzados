@@ -43,4 +43,8 @@ public class PlayerEventClient: MonoBehaviour {
                 _playerEventChannel.SendEvent(PlayerEvent.Shoot());
             }
     }
+
+    public void ThrowGranade(Vector3 direction) {
+        _playerEventChannel.SendEvent(PlayerEvent.ThrowGranade(direction));
+    }
 }

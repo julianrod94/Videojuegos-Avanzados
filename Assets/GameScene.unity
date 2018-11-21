@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e193ba0a236c4635af37a17ec80d11cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ServerIp: 192.168.0.7
+  ServerIp: 192.168.0.29
   ServerPort: 5000
 --- !u!4 &19086459
 Transform:
@@ -241,6 +241,49 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1033097598139386, guid: 6376aa3c08f3edc4aacf8f98429be4c7,
     type: 2}
   m_PrefabInternal: {fileID: 79097760}
+--- !u!1 &168788814
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 168788816}
+  - component: {fileID: 168788815}
+  m_Layer: 0
+  m_Name: GrenadeReceiver
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &168788815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 168788814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc61e42861d450897bc01cfc73c62d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grenadePrefab: {fileID: 1243235466430786, guid: af877dad50e81b5479eea53417b96afc,
+    type: 2}
+  activeGrenades: 0
+--- !u!4 &168788816
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 168788814}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 58.911407, y: 12.6203985, z: 18.341187}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &217641144
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,5 +15,9 @@ public class Shoot : MonoBehaviour {
 		if (Input.GetMouseButtonDown(0)) {
 			client.Shoot(weaponRange,transform);
 		}
+
+		if (Input.GetKeyDown(KeyCode.E)) {
+			client.ThrowGranade(Camera.main.transform.rotation.eulerAngles);
+		}
 	}
 }

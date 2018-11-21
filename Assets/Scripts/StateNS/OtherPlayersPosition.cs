@@ -36,7 +36,7 @@ namespace StateNS {
             //Check for null and compare run-time types.
             if (obj == null || GetType() != obj.GetType()) return false;
 
-            var other = (CubePosition) obj;
+            var other = (OtherPlayersStates) obj;
             return other.TimeStamp().Equals(_timeStamp);
         }
 

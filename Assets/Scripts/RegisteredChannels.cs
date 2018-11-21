@@ -2,5 +2,6 @@
     PlayerPositionChannel = 1,
     PlayerInputChannel,
     OtherPlayersChannel,
-    PlayerEventChannel
+    PlayerEventChannel,
+    GrenadeStatesChannel
 }

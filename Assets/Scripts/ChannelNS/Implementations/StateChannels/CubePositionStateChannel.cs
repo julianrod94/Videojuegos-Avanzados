@@ -61,7 +61,6 @@ namespace ChannelNS.Implementations.StateChannels {
         }
 
         protected override byte[] SerializeData(CubePosition data) {
-            Debug.Log("Sending3 ack to ip: ");
             lock (this) {
                 try {
                     buffer.ToWrite();

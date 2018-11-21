@@ -63,7 +63,8 @@ public class ServerConnectionManager : MonoBehaviour {
         while (initializedPlayers < _clients.Count) {
             var cm = _conections[initializedPlayers];
             var newPlayer = Instantiate(playerPrefab);
-            OtherPlayersStatesProvider.Instance.AddPlayer(newPlayer.GetComponent<PlayerEventServer>(), cm);
+            var eventServer = newPlayer.GetComponent<PlayerEventServer>();
+            var id = OtherPlayersStatesProvider.Instance.AddPlayer(eventServer, cm);
             newPlayer.GetComponent<PlayerMovementProvider>().SetupChannels(cm);
             newPlayer.GetComponent<PlayerEventServer>().SetupChannels(cm);
             initializedPlayers++;

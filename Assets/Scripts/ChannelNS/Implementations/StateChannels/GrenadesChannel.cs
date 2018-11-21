@@ -6,10 +6,10 @@ using StateNS;
 using UnityEngine;
 
 namespace ChannelNS.Implementations.StateChannels {
-    public class OtherPlayersChannel : StateChannel<OtherPlayersStates> {
-        private readonly Interpolator<OtherPlayersStates> _cubeInterpolator = new Interpolator<OtherPlayersStates>();
+    public class GrenadesChannel : StateChannel<GrenadesState> {
+        private readonly Interpolator<GrenadesState> _cubeInterpolator = new Interpolator<GrenadesState>();
 
-        private readonly IUnityBridgeState<OtherPlayersStates> _bridge;
+        private readonly IUnityBridgeState<GrenadesState> _bridge;
         
         private readonly float _positionMax = 100;
         private readonly float _positionMin = -100;
@@ -19,14 +19,10 @@ namespace ChannelNS.Implementations.StateChannels {
         private readonly float _timeStampMax = 600;
         private readonly float _timeStampPrecision = 1 / 60f;
 
-        private readonly int _minPlayers = 0;
-        private readonly int _maxPlayers = 7;
+        private readonly int _mingranades = 0;
+        private readonly int _maxGranades = 511;
         
-        private readonly float _minRot = 0;
-        private readonly float _maxRot = 360;
-        private readonly float _stepRot = 0.2f;
-
-        public OtherPlayersChannel(IUnityBridgeState<OtherPlayersStates> bridge, SenderStrategy strategy, float refreshTime) {
+        public GrenadesChannel(IUnityBridgeState<GrenadesState> bridge, SenderStrategy strategy, float refreshTime) {
             _bridge = bridge;
             setupStrategy(strategy);
             SetupInterpolator(_cubeInterpolator);
@@ -36,34 +32,30 @@ namespace ChannelNS.Implementations.StateChannels {
             }
         }
 
-        protected override OtherPlayersStates DeserializeData(byte[] bytes) {
+        protected override GrenadesState DeserializeData(byte[] bytes) {
             lock (this) {
-                Dictionary<int, OtherPlayerState> actions;
+                Dictionary<int, GrenadeState> actions;
                 float timeStamp;
                 try {
                     buffer.LoadBytes(bytes);
                     buffer.ToRead();
 
                     timeStamp = buffer.ReadFloat(_timeStampMin, _timeStampMax, _timeStampPrecision);
-                    var amount = buffer.ReadInt(_minPlayers, _maxPlayers);
+                    var amount = buffer.ReadInt(_mingranades, _maxGranades);
                     
-                    actions = new Dictionary<int, OtherPlayerState>(amount);
+                    actions = new Dictionary<int, GrenadeState>(amount);
                     for (int i = 0; i < amount; i++) {
-                        var player = buffer.ReadInt(_minPlayers, _maxPlayers);
+                        var grenade = buffer.ReadInt(_mingranades, _maxGranades);
 
                         var posX = buffer.ReadFloat(_positionMin, _positionMax, _positionPrecision);
                         var posY = buffer.ReadFloat(_positionMin, _positionMax, _positionPrecision);
                         var posZ = buffer.ReadFloat(_positionMin, _positionMax, _positionPrecision);
+
+                        var isExploding = buffer.ReadBit();
                         
-                        var rotX = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
-                        var rotY = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
-                        var rotZ = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
-                        
-                        
-                        actions[player] =
-                            new OtherPlayerState(
-                                new Vector3(posX, posY, posZ),
-                                Quaternion.Euler(rotX, rotY, rotZ)
+                        actions[grenade] =
+                            new GrenadeState(
+                                new Vector3(posX, posY, posZ), isExploding
                             );
                     }
                 } catch (Exception e) {
@@ -71,32 +63,27 @@ namespace ChannelNS.Implementations.StateChannels {
                     throw;
                 }
 
-                return new OtherPlayersStates(timeStamp, actions);
+                return new GrenadesState(timeStamp, actions);
             }
         }
 
-        protected override byte[] SerializeData(OtherPlayersStates data) {
+        protected override byte[] SerializeData(GrenadesState data) {
             lock (this) {
                 try {
                     
                     buffer.ToWrite();
-                    if (data._states.Count > 7) {
-                        throw new ExecutionEngineException("NO MORE THAN 7 PLayers allowed");
-                    }
                     
                     buffer.WriteFloatRounded(data.TimeStamp(), _timeStampMin, _timeStampMax, _timeStampPrecision);
-                    buffer.WriteInt(data._states.Count, _minPlayers, _maxPlayers);
+                    buffer.WriteInt(data._states.Count, _mingranades, _maxGranades);
 
-                    foreach (var otherPlayerState in data._states) {
-                        buffer.WriteInt(otherPlayerState.Key, _minPlayers, _maxPlayers);
+                    foreach (var grenadeState in data._states) {
+                        buffer.WriteInt(grenadeState.Key, _mingranades, _maxGranades);
 
-                        var pData = otherPlayerState.Value;
+                        var pData = grenadeState.Value;
                         buffer.WriteFloatRounded(pData.Position.x, _positionMin, _positionMax, _positionPrecision);
                         buffer.WriteFloatRounded(pData.Position.y, _positionMin, _positionMax, _positionPrecision);
                         buffer.WriteFloatRounded(pData.Position.z, _positionMin, _positionMax, _positionPrecision);
-                        buffer.WriteFloatRounded(Mathf.Abs(pData.Rotation.x%360), _minRot, _maxRot, _stepRot);
-                        buffer.WriteFloatRounded(Mathf.Abs(pData.Rotation.y%360), _minRot, _maxRot, _stepRot);
-                        buffer.WriteFloatRounded(Mathf.Abs(pData.Rotation.z%360), _minRot, _maxRot, _stepRot);
+                        buffer.WriteBool(pData.IsExploding);
                     }
                 } catch (Exception e) {
                     Debug.LogError(e);
