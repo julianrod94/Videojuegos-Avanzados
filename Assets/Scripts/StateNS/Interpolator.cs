@@ -16,7 +16,7 @@ namespace StateNS {
         public T PastState;
         private T _targetState;
         private float _time = -1;
-        public int FrameBufferSize = 2;
+        public int FrameBufferSize = 3;
 
         public float MaxTimeUntilJump = 1;
         public T PresentState { get; private set; }

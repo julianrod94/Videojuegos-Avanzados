@@ -56,7 +56,11 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
         foreach (var keyValuePair in grenades) {
             var po = keyValuePair.Value;
             
-            newDict[keyValuePair.Key] = new GrenadeState(po.gameObject.transform.position, po.isExploding);
+            newDict[keyValuePair.Key] = new GrenadeState(
+                po.gameObject.transform.position, 
+                po.gameObject.transform.rotation, 
+                po.isExploding
+            );
         }
         
         LastState = new GrenadesState(Time.time, newDict);
