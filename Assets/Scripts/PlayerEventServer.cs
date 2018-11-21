@@ -25,10 +25,7 @@ public class PlayerEventServer: MonoBehaviour {
                 
                 case PlayerEvent.Type.ThrowGranade:
                     Debug.Log("player " + _otherPlayer.id + "Threw a grenade");
-                    var position = OtherPlayersStatesProvider.Instance.players[_otherPlayer.id].gameObject.transform
-                        .position;
-                    
-                    GrenadeStatesProvider.Instance.GenerateGrenade(position, pEvent.direction);
+                    GrenadeStatesProvider.Instance.GenerateGrenade(_otherPlayer.id, pEvent.direction);
                     break;
                 
                     

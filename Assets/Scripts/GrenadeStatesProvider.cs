@@ -14,12 +14,12 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
     private Queue<initialConditions> _toInstantiate = new Queue<initialConditions>();
         
     private struct initialConditions {
-        public initialConditions(Vector3 position, Quaternion rotation) {
-            this.position = position;
+        public initialConditions(int playerId, Quaternion rotation) {
+            this.playerId = playerId;
             this.rotation = rotation;
         }
         
-        public Vector3 position;
+        public int playerId;
         public Quaternion rotation;
     }
 
@@ -42,7 +42,9 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
     private void FixedUpdate() {
         while (_toInstantiate.Count > 0) {
             var conditions = _toInstantiate.Dequeue();
-            var newGrenade = Instantiate(grenadePrefab, conditions.position, conditions.rotation);
+            var newGrenade = Instantiate(grenadePrefab, 
+                OtherPlayersStatesProvider.Instance.players[conditions.playerId].gameObject.transform.position,
+                conditions.rotation);
             newGrenade.GetComponent<Rigidbody>().AddForce(Vector3.forward * 5, ForceMode.Impulse);
             grenades[grenadeCount++] = newGrenade.GetComponent<GrenadeBehaviour>();
         }
@@ -57,8 +59,8 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
         LastState = new GrenadesState(Time.time, newDict);
     }
 
-    public void GenerateGrenade(Vector3 position, Vector3 rotation) {
-        _toInstantiate.Enqueue(new initialConditions(position, Quaternion.Euler(rotation))); 
+    public void GenerateGrenade(int playerId, Vector3 rotation) {
+        _toInstantiate.Enqueue(new initialConditions(playerId, Quaternion.Euler(rotation))); 
     }
     
 }
