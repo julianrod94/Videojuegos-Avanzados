@@ -37,7 +37,6 @@ public class OtherPlayersStatesReceiver: MonoBehaviour {
         
         if (currentState != null) {
             foreach (var pState in currentState._states) {
-                Debug.LogError("STATE: " + pState.Key + "-" + pState.Value.Position + "-" + pState.Value.Rotation);
                 if (!players.ContainsKey(pState.Key)) {
                     AddPlayer(pState.Key, pState.Value.Position);
                 }
