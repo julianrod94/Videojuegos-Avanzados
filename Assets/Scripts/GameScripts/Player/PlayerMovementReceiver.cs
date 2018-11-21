@@ -1,4 +1,5 @@
-﻿﻿using System.Collections;
+﻿﻿using System;
+ using System.Collections;
 using System.Collections.Generic;
 using ChannelNS;
 using ChannelNS.Implementations.EventChannel;
@@ -7,6 +8,7 @@ using InputManagerNS;
 using SenderStrategyNS;
 using StateNS;
 using UnityEngine;
+ using Random = UnityEngine.Random;
 
 public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<CubePosition> {
     private InputManager _inputManager = new InputManager();
@@ -22,7 +24,7 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<CubePositi
 
     // Use this for initialization
     private void Start() {
-        _lastUpdatedState = new CubePosition(Time.time, transform.position, -1);
+        _lastUpdatedState = new CubePosition(Time.time, transform.position, -1, GetComponent<Health>().GetCurrentHealth());
         _cubeChannel = new CubePositionStateChannel(this, new TrivialStrategy(), 0.1f);
         _channel = new InputSequenceStateChannel((a) => { },new TrivialStrategy());
         ClientConnectionManager.Instance.ChannelManager.RegisterChannel(0, _cubeChannel);
@@ -58,8 +60,14 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<CubePositi
        _cubeChannel.Interpolator.Update(Time.deltaTime);
         currentState = _cubeChannel.Interpolator.PastState;
         
-        if (currentState != null) {
+        if (currentState != null)
+        {
+            Health health = GetComponent<Health>();
             transform.position = currentState.Position;
+            if (health.GetCurrentHealth() != currentState.Health)
+            {
+                health.Damage(currentState.Health);
+            }
             _inputManager.EmptyUpTo(currentState.LastInputApplied);
             _lastUpdatedState = currentState;
         } else {

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 19086459}
   - component: {fileID: 19086458}
   - component: {fileID: 19086460}
+  - component: {fileID: 19086461}
   m_Layer: 0
   m_Name: ConnectionManagerClient
   m_TagString: Untagged
@@ -169,6 +170,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   otherPlayerPrefab: {fileID: 1027560880124502, guid: 2c06281bec3d97c428e96525bdeb8ec5,
     type: 2}
+--- !u!114 &19086461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 19086457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c44d442cb8f448e1ada554efdb36bb8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HeartOne: {fileID: 431389929}
+  HeartTwo: {fileID: 2126378939}
+  HeartThree: {fileID: 53684487}
+  Player: {fileID: 79097761}
+--- !u!1 &53684487 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1822558669798308, guid: 98803367dc850c94dacc314476fbdd89,
+    type: 2}
+  m_PrefabInternal: {fileID: 1909451062}
 --- !u!1001 &79097760
 Prefab:
   m_ObjectHideFlags: 0
@@ -215,6 +236,11 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6376aa3c08f3edc4aacf8f98429be4c7, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &79097761 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1033097598139386, guid: 6376aa3c08f3edc4aacf8f98429be4c7,
+    type: 2}
+  m_PrefabInternal: {fileID: 79097760}
 --- !u!1 &217641144
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,6 +496,11 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 329776935}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &431389929 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1756699327460994, guid: 98803367dc850c94dacc314476fbdd89,
+    type: 2}
+  m_PrefabInternal: {fileID: 1909451062}
 --- !u!1 &508501160
 GameObject:
   m_ObjectHideFlags: 0
@@ -1413,3 +1444,8 @@ Transform:
   m_Father: {fileID: 952013114}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!1 &2126378939 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1167843783828184, guid: 98803367dc850c94dacc314476fbdd89,
+    type: 2}
+  m_PrefabInternal: {fileID: 1909451062}

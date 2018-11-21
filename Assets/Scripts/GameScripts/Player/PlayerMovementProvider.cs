@@ -1,6 +1,4 @@
-﻿﻿using System.Collections;
-using System.Collections.Generic;
-using ChannelNS;
+﻿using ChannelNS;
 using ChannelNS.Implementations.EventChannel;
 using ChannelNS.Implementations.StateChannels;
 using InputManagerNS;
@@ -53,7 +51,7 @@ public class PlayerMovementProvider: MonoBehaviour, IUnityBridgeState<CubePositi
         }
         
         _inputManager.EmptyAll(_lastAppliedInput);
-        LastState = new CubePosition(Time.time, transform.position, _lastAppliedInput);
+        LastState = new CubePosition(Time.time, transform.position, _lastAppliedInput, GetComponent <Health> ().GetCurrentHealth());
     }
 
     private void OnDestroy() {

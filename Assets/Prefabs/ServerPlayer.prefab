@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 114317976805653562}
   - component: {fileID: 114757498359942424}
   - component: {fileID: 114254174355713928}
+  - component: {fileID: 114281173559538030}
   m_Layer: 0
   m_Name: ServerPlayer
   m_TagString: Player
@@ -2496,6 +2497,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0fa12a8a1fa4676aa7acbe533629100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114281173559538030
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1043801822641488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fbea37ab16557c41b556c78dd82f5b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114317976805653562
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2543,7 +2555,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponRange: 200
-  client: {fileID: 0}
 --- !u!124 &124608535322123732
 Behaviour:
   m_ObjectHideFlags: 1

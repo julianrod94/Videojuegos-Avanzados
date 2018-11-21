@@ -19,6 +19,9 @@ namespace ChannelNS.Implementations.StateChannels {
         
         private readonly int _minInputNumber = 0;
         private readonly int _maxInputNumber = 10000;
+        
+        private readonly int _minHealthNumber = 0;
+        private readonly int _maxHealthNumber = 3;
 
         public CubePositionStateChannel(
             IUnityBridgeState<CubePosition> bridge,
@@ -38,6 +41,7 @@ namespace ChannelNS.Implementations.StateChannels {
                 float z = 0;
                 int lastInput = 0;
                 float timeStamp = 0;
+                int health = 0;
                 try {
                     buffer.LoadBytes(bytes);
                     buffer.ToRead();
@@ -46,12 +50,13 @@ namespace ChannelNS.Implementations.StateChannels {
                     z = buffer.ReadFloat(_positionMin, _positionMax, _positionPrecision);
                     timeStamp = buffer.ReadFloat(_timeStampMin, _timeStampMax, _timeStampPrecision);
                     lastInput = buffer.ReadInt(_minInputNumber, _maxInputNumber);
+                    health = buffer.ReadInt(_minHealthNumber, _maxHealthNumber);
                 } catch (Exception e) {
                     Debug.LogError(e);
                     throw;
                 }
 
-                return new CubePosition(timeStamp, new Vector3(x, y, z), lastInput);
+                return new CubePosition(timeStamp, new Vector3(x, y, z), lastInput, health);
             }
         }
 
@@ -65,6 +70,7 @@ namespace ChannelNS.Implementations.StateChannels {
                     buffer.WriteFloatRounded(data.Position.z, _positionMin, _positionMax, _positionPrecision);
                     buffer.WriteFloatRounded(data.TimeStamp(), _timeStampMin, _timeStampMax, _timeStampPrecision);
                     buffer.WriteInt(data.LastInputApplied, _minInputNumber, _maxInputNumber);
+                    buffer.WriteInt(data.Health, _minHealthNumber, _maxHealthNumber);
                 } catch (Exception e) {
                     Debug.LogError(e);
                     throw;
