@@ -38,7 +38,7 @@ public abstract class UDPConnection {
         client.Close();
     }
 
-    public void SendPacket(byte[] data, IPAddress ip, int port) {
+    public virtual void SendPacket(byte[] data, IPAddress ip, int port) {
         Debug.Log("SENDING to " + ip);
         try {
             client.Send(data, data.Length, new IPEndPoint(ip, port));

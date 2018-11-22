@@ -147,6 +147,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ServerIp: 127.0.0.1
   ServerPort: 5000
+  packetLoss: 0
+  Latency: 0
 --- !u!4 &19086459
 Transform:
   m_ObjectHideFlags: 0

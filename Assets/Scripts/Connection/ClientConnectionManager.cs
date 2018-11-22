@@ -16,6 +16,12 @@ public class ClientConnectionManager : MonoBehaviour {
     private Thread listenThread;
 
     public static ClientConnectionManager Instance;
+
+    [Range(0,100)]
+    public float packetLoss = 0;
+    
+    [Range(0,1000)]
+    public float Latency = 0;
     
     private void Awake() {
         if (Instance == null) {

@@ -23,9 +23,9 @@ namespace SnapshotsNS.GrenadeStateNS {
         private readonly int _maxGranades = 511;
         
                 
-        private readonly float _minRot = 0;
-        private readonly float _maxRot = 360;
-        private readonly float _stepRot = 0.2f;
+        private readonly float _minRot = -1;
+        private readonly float _maxRot = 1;
+        private readonly float _stepRot = 0.2f/180f;
 
         
         public GrenadesChannel(IUnityBridgeState<GrenadesState> bridge, SenderStrategy strategy, float refreshTime) {
@@ -60,13 +60,14 @@ namespace SnapshotsNS.GrenadeStateNS {
                         var rotX = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
                         var rotY = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
                         var rotZ = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
+                        var rotW = buffer.ReadFloat(_minRot, _maxRot, _stepRot);
 
                         var isExploding = buffer.ReadBit();
                         
                         actions[grenade] =
                             new GrenadeState(
                                 new Vector3(posX, posY, posZ), 
-                                Quaternion.Euler(rotX, rotY, rotZ),
+                                new Quaternion(rotX, rotY, rotZ, rotW), 
                                 isExploding
                             );
                     }
@@ -95,9 +96,10 @@ namespace SnapshotsNS.GrenadeStateNS {
                         buffer.WriteFloatRounded(pData.Position.x, _positionMin, _positionMax, _positionPrecision);
                         buffer.WriteFloatRounded(pData.Position.y, _positionMin, _positionMax, _positionPrecision);
                         buffer.WriteFloatRounded(pData.Position.z, _positionMin, _positionMax, _positionPrecision);
-                        buffer.WriteFloatRounded(Utils.Angles.Mod(pData.Rotation.eulerAngles.x,360), _minRot, _maxRot, _stepRot);
-                        buffer.WriteFloatRounded(Utils.Angles.Mod(pData.Rotation.eulerAngles.x,360), _minRot, _maxRot, _stepRot);
-                        buffer.WriteFloatRounded(Utils.Angles.Mod(pData.Rotation.eulerAngles.x,360), _minRot, _maxRot, _stepRot);
+                        buffer.WriteFloatRounded(pData.Rotation.x, _minRot, _maxRot, _stepRot);
+                        buffer.WriteFloatRounded(pData.Rotation.y, _minRot, _maxRot, _stepRot);
+                        buffer.WriteFloatRounded(pData.Rotation.z, _minRot, _maxRot, _stepRot);
+                        buffer.WriteFloatRounded(pData.Rotation.w, _minRot, _maxRot, _stepRot);
                         buffer.WriteBool(pData.IsExploding);
                     }
                 } catch (Exception e) {
