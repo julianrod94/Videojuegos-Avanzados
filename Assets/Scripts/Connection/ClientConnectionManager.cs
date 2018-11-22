@@ -6,6 +6,7 @@ using ChannelNS;
 using SenderStrategyNS;
 using ServerNS;
 using UnityEngine;
+using Utils;
 
 public class ClientConnectionManager : MonoBehaviour {
     public string ServerIp;
@@ -40,6 +41,10 @@ public class ClientConnectionManager : MonoBehaviour {
         } else {
             Destroy(this);
         }
+    }
+
+    private void Update() {
+        CurrentTime.Time = Time.time;
     }
 
     public void sendToChannel(IPAddress ip, int port, byte[] packet) {

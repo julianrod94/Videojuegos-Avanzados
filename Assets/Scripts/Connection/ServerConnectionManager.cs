@@ -6,6 +6,7 @@ using EventNS.PlayerEventNS;
 using SenderStrategyNS;
 using ServerNS;
 using UnityEngine;
+using Utils;
 
 public class ServerConnectionManager : MonoBehaviour {
     public struct Connection {
@@ -61,6 +62,7 @@ public class ServerConnectionManager : MonoBehaviour {
     }
 
     private void FixedUpdate() {
+        CurrentTime.Time = Time.time;
         while (initializedPlayers < _clients.Count) {
             var cm = _conections[initializedPlayers];
             var newPlayer = Instantiate(playerPrefab);

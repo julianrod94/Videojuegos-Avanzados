@@ -64,7 +64,6 @@ namespace SenderStrategyNS {
         }
 
         private void ReSendPackage(byte messageId) {
-            Debug.Log("RESENDING PACKAGE " + messageId);
             if (!waiting.ContainsKey(messageId)) {
                 throw new ExecutionEngineException("There was a problem where a timer was leaked");
             }
@@ -82,7 +81,7 @@ namespace SenderStrategyNS {
         }
 
         public override void ReceivePackage(byte[] bytes) {
-            var now = DateTime.Now.Second;
+            var now = CurrentTime.Time;
             
             var command = bytes[bytes.Length - 1];
             var messageId = bytes[bytes.Length - 2];

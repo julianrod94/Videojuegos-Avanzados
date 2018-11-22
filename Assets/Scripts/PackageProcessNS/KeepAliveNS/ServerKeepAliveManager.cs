@@ -5,11 +5,12 @@ using EventNS.keepAliveNS;
 using SenderStrategyNS;
 using ServerNS;
 using UnityEngine;
+using Utils;
 
 namespace PackageProcessNS.KeepAliveNS {
     public class ServerKeepAliveManager: MonoBehaviour {
         Dictionary<int, KeepAliveChannel> _keepAlives = new Dictionary<int, KeepAliveChannel>();
-        Dictionary<int, long> _lastKeepAlives = new Dictionary<int, long>();
+        Dictionary<int, float> _lastKeepAlives = new Dictionary<int, float>();
 
         public static ServerKeepAliveManager Instance;
 
@@ -20,13 +21,13 @@ namespace PackageProcessNS.KeepAliveNS {
         public void AddPlayer(int id, ChannelManager cm) {
             var channel = new KeepAliveChannel((b => {
                 if (_lastKeepAlives.ContainsKey(id)) {
-                    _lastKeepAlives[id] = DateTime.Now.Millisecond;
+                    _lastKeepAlives[id] = CurrentTime.Time;
                 }
             } ), new ReliableStrategy(0.1f, 20));
 
             cm.RegisterChannel((int) RegisteredChannels.KeepAliveChannel, channel);
             _keepAlives[id] = channel;
-            _lastKeepAlives[id] = DateTime.Now.Millisecond;
+            _lastKeepAlives[id] = CurrentTime.Time;
         }
 
         void RemovePlayer(int id) {
@@ -40,7 +41,7 @@ namespace PackageProcessNS.KeepAliveNS {
         private void Update() {
             var dced = new List<int>();
             foreach (var lastKeepAlive in _lastKeepAlives) {
-                if (DateTime.Now.Millisecond - lastKeepAlive.Value > 5000) {
+                if (CurrentTime.Time- lastKeepAlive.Value > 5) {
                     dced.Add(lastKeepAlive.Key);
                 }
             }

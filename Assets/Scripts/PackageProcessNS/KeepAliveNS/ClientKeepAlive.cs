@@ -5,16 +5,17 @@ using EventNS.keepAliveNS;
 using SenderStrategyNS;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+ using Utils;
 
 namespace PackageProcessNS.KeepAliveNS {
     public class ClientKeepAlive: MonoBehaviour {
         private KeepAliveChannel _channel;
-        private long lastKeepAlive = 0;
+        private float lastKeepAlive = 0;
 
         private void Start() {
             _channel = new KeepAliveChannel((b => {
                         Debug.Log("Received KEEP ALIVE");
-                lastKeepAlive = DateTime.Now.Millisecond;
+                lastKeepAlive = CurrentTime.Time;
                 }
              ), new ReliableStrategy(0.1f, 20));
 
@@ -32,7 +33,8 @@ namespace PackageProcessNS.KeepAliveNS {
         }
         
         private void Update() {
-            if (DateTime.Now.Millisecond - lastKeepAlive > 5000) {
+            Debug.LogWarning("Client time " + (CurrentTime.Time - lastKeepAlive) );
+            if (CurrentTime.Time - lastKeepAlive > 5) {
                 Debug.LogError("PLAYER IS DEAD");
                 SceneManager.LoadScene(0);
             }
