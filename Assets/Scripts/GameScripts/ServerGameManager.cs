@@ -8,7 +8,7 @@ public class ServerGameManager: MonoBehaviour {
     private Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
     private List<int> toRespawn = new List<int>();
     private List<int> toRemove = new List<int>();
-    private readonly float explosionRadius = 5;
+    private readonly float explosionRadius = 25;
     
     private void Awake() {
         if (Instance == null) {

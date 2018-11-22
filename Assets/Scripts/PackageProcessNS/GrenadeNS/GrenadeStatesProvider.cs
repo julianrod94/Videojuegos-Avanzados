@@ -49,9 +49,10 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
         while (_toInstantiate.Count > 0) {
             var conditions = _toInstantiate.Dequeue();
             var newGrenade = Instantiate(grenadePrefab, 
-                OtherPlayersStatesProvider.Instance.players[conditions.PlayerId].gameObject.transform.position,
+                OtherPlayersStatesProvider.Instance.players[conditions.PlayerId].gameObject.GetComponentInChildren<GrenadeOrigin>()
+                .transform.position,
                 conditions.rotation);
-            newGrenade.GetComponent<Rigidbody>().AddForce(Vector3.forward * 5, ForceMode.Impulse);
+            newGrenade.GetComponent<Rigidbody>().AddForce(Vector3.forward * 25, ForceMode.Impulse);
             grenades[grenadeCount++] = newGrenade.GetComponent<ServerGrenadeBehaviour>();
         }
         
