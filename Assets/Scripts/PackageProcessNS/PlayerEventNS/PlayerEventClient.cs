@@ -4,14 +4,21 @@ using EventNS.PlayerEventNS;
 using SenderStrategyNS;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
+using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 
 public class PlayerEventClient: MonoBehaviour {
-    private PlayerEventChannel _playerEventChannel;
-    
+    public PlayerEventChannel PlayerEventChannel;
+
+    public static PlayerEventClient Instance;
+
+    private void Awake() {
+        Instance = this;
+    }
+
     private void Start() {
-        _playerEventChannel = new PlayerEventChannel(Process, new ReliableStrategy(0.1f,-1));
-        ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerEventChannel, _playerEventChannel);
+        PlayerEventChannel = new PlayerEventChannel(Process, new ReliableStrategy(0.1f,-1));
+        ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerEventChannel, PlayerEventChannel);
     }
 
     private void Process(PlayerEvent pEvent) {
@@ -33,7 +40,7 @@ public class PlayerEventClient: MonoBehaviour {
 
     public void Connect() {
         Debug.Log("Connecting");
-        _playerEventChannel.SendEvent(PlayerEvent.Connect());
+        PlayerEventChannel.SendEvent(PlayerEvent.Connect());
     }
 
     public void Shoot(float weaponRange, Transform origin) {
@@ -48,19 +55,19 @@ public class PlayerEventClient: MonoBehaviour {
                 switch (obj.tag) {
                     case "Enemy":
                         var id = obj.GetComponent<OtherPlayer>().id;
-                        _playerEventChannel.SendEvent(PlayerEvent.Hit(id));
+                        PlayerEventChannel.SendEvent(PlayerEvent.Hit(id));
                         return;
                 }
                 
-                _playerEventChannel.SendEvent(PlayerEvent.Shoot());
+                PlayerEventChannel.SendEvent(PlayerEvent.Shoot());
             }
     }
 
     public void ThrowGranade(Vector3 direction) {
-        _playerEventChannel.SendEvent(PlayerEvent.ThrowGranade(direction));
+        PlayerEventChannel.SendEvent(PlayerEvent.ThrowGranade(direction));
     }
 
     private void OnDestroy() {
-        _playerEventChannel.Dispose();
+        PlayerEventChannel.Dispose();
     }
 }

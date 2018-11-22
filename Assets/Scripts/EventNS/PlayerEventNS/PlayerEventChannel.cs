@@ -47,6 +47,9 @@ namespace EventNS.PlayerEventNS {
                         
                         case PlayerEvent.Type.Connected:
                             return PlayerEvent.Connected();
+                        
+                        case PlayerEvent.Type.Respawn:
+                            return PlayerEvent.Respawn();
                     }
                 } catch (Exception e) {
                     Debug.LogError(e);

@@ -35,6 +35,11 @@ public class PlayerEventServer: MonoBehaviour {
                 Debug.Log("Request to connect from " + _otherPlayer.id);
                 PlayerEventChannel.SendEvent(PlayerEvent.Connected());
                 break;
+            
+            case PlayerEvent.Type.Respawn:
+                Debug.Log("Request to respawn player " + _otherPlayer.id);
+                ServerGameManager.Instance.RespawnPlayer(_otherPlayer.id);
+                break;
                 
                     
         }

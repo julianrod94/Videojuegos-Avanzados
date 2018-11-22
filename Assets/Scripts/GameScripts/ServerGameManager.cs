@@ -5,7 +5,9 @@ public class ServerGameManager: MonoBehaviour {
     
     
     public static ServerGameManager Instance;
-    private List<GameObject> players = new List<GameObject>();
+    private Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
+    private List<int> toRespawn = new List<int>();
+    private List<int> toRemove = new List<int>();
     private readonly float explosionRadius = 5;
     
     private void Awake() {
@@ -14,24 +16,37 @@ public class ServerGameManager: MonoBehaviour {
         }
     }
 
-    public void AddPlayer(GameObject player) {
-        players.Add(player);
+    private void Update() {
+        foreach (var playerId in toRespawn) {
+            players[playerId].GetComponent<Health>().CurrentHealth = 3;
+            players[playerId].transform.position = Vector3.zero;
+            toRespawn.Remove(playerId);
+        }
+        foreach (var playerId in toRemove) {
+            Destroy( players[playerId].gameObject);
+            toRemove.Remove(playerId);
+            players.Remove(playerId);
+        }
+    }
+
+    public void AddPlayer(GameObject player, int id) {
+        players.Add(id, player);
     }
 
     public void ExplodeGrenade(Vector3 position) {
-        foreach (var player in players) {
-            if (Vector3.Distance(player.transform.position, position) < explosionRadius) {
-                var health = player.GetComponent<Health>();
+        foreach (var player in players.Keys) {
+            if (Vector3.Distance(players[player].transform.position, position) < explosionRadius) {
+                var health = players[player].GetComponent<Health>();
                 health.Damage(health.CurrentHealth - 1);
             }
         }
     }
+
+    public void RespawnPlayer(int id) {
+        toRespawn.Add(id);
+    }
     
     public void RemovePlayer(int id) {
-        foreach (var player in players) {
-            if (player.GetComponent<OtherPlayer>().id == id) {
-                Destroy(player.gameObject);
-            }
-        }
+        toRemove.Add(id);
     }
 }

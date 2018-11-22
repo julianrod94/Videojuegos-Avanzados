@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using EventNS.PlayerEventNS;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
@@ -29,9 +30,7 @@ public class GameManager : MonoBehaviour {
 
 	public void Die() {
 		isActive = false;
-		//TODO DISABLE ACTIONS
 		GetComponent<CanvasManager>().ShowDied();
-
 	}
 
 	public void Respawn() {
@@ -39,6 +38,7 @@ public class GameManager : MonoBehaviour {
 		Player.GetComponent<Health>().CurrentHealth = 3;
 		Player.transform.position = Vector3.zero;
 		GetComponent<CanvasManager>().ShowHp();
+		PlayerEventClient.Instance.PlayerEventChannel.SendEvent(PlayerEvent.Respawn());
 	}
 
 	private void Update() {
