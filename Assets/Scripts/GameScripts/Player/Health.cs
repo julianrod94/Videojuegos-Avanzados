@@ -14,7 +14,8 @@ public class Health : MonoBehaviour
 
 	public void Damage(int currentHealth)
 	{
-		CurrentHealth = currentHealth;
+		CurrentHealth = currentHealth >= 0 ? currentHealth : 0;
+		
 	}
 
 	public int GetCurrentHealth()

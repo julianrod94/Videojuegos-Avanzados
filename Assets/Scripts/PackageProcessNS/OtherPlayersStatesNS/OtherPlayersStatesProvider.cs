@@ -67,6 +67,7 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
     {
         Health playerHealth = players[id];
         playerHealth.Damage(playerHealth.GetCurrentHealth() - 1);
+        if(playerHealth.GetCurrentHealth() <= 0) ServerGameManager.Instance.KillPlayer(id);
     }
     
     private void FixedUpdate() {
