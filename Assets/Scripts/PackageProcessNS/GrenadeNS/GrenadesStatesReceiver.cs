@@ -33,6 +33,21 @@ public class GrenadesStatesReceiver: MonoBehaviour {
         var currentState = _channel.Interpolator.PresentState;
         
         if (currentState != null) {
+            if (activeGrenades > currentState._states.Count) {
+                var destroyed = new List<int>();
+                foreach (var keyValuePair in grenades) {
+                    if (!currentState._states.ContainsKey(keyValuePair.Key)) {
+                        destroyed.Add(keyValuePair.Key);
+                    }
+                }
+                
+                foreach (var i in destroyed) {
+                    Destroy(grenades[i].gameObject);
+                    grenades.Remove(i);
+                    activeGrenades--;
+                }
+            }
+            
             foreach (var pState in currentState._states) {
                 if (!grenades.ContainsKey(pState.Key)) {
                     AddGrenade(pState.Key, pState.Value.Position);
@@ -43,15 +58,7 @@ public class GrenadesStatesReceiver: MonoBehaviour {
                 po.isExploding = pState.Value.IsExploding;
             }
 
-            if (activeGrenades < currentState._states.Count) {
-                foreach (var keyValuePair in grenades) {
-                    if (!currentState._states.ContainsKey(keyValuePair.Key)) {
-                        Destroy(grenades[keyValuePair.Key]);
-                        grenades.Remove(keyValuePair.Key);
-                        activeGrenades--;
-                    }
-                }
-            }
+            
         }
     }
 

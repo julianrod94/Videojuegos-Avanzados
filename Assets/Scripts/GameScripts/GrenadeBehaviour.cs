@@ -8,20 +8,17 @@ namespace GameScripts {
         private bool exploded;
         private float timeSinceExplotion;
 
-        private void Start() {
-            _explosion = Instantiate(explosion);
-        }
-
         private void Update() {
             if (!exploded && isExploding) {
-                _explosion.Play();
+                _explosion = Instantiate(explosion);
                 exploded = true;
                 timeSinceExplotion = Time.time;
             }
+        }
 
-            if (Time.time - timeSinceExplotion > 1) {
+        private void OnDestroy() {
+            if (_explosion != null) {
                 Destroy(_explosion.gameObject);
-                Destroy(gameObject);
             }
         }
     }

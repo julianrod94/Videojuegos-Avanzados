@@ -10,7 +10,7 @@ public class ServerGrenadeBehaviour: MonoBehaviour {
     }
 
     private void Update() {
-        if (Time.time - timeWhenThrown > timeToExplode) {
+        if (!isExploding && Time.time - timeWhenThrown > timeToExplode) {
             ServerGameManager.Instance.ExplodeGrenade(transform.position);
             isExploding = true;
         }
