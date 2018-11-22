@@ -41,6 +41,6 @@ public class ClientConnectionManager : MonoBehaviour {
     }
 
     private void OnDestroy() {
-        client.Listening = false;
+        client.Destroy();
     }
 }

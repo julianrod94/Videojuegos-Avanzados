@@ -95,9 +95,9 @@ namespace SnapshotsNS.GrenadeStateNS {
                         buffer.WriteFloatRounded(pData.Position.x, _positionMin, _positionMax, _positionPrecision);
                         buffer.WriteFloatRounded(pData.Position.y, _positionMin, _positionMax, _positionPrecision);
                         buffer.WriteFloatRounded(pData.Position.z, _positionMin, _positionMax, _positionPrecision);
-                        buffer.WriteFloatRounded(Mathf.Abs(pData.Rotation.eulerAngles.x%360), _minRot, _maxRot, _stepRot);
-                        buffer.WriteFloatRounded(Mathf.Abs(pData.Rotation.eulerAngles.y%360), _minRot, _maxRot, _stepRot);
-                        buffer.WriteFloatRounded(Mathf.Abs(pData.Rotation.eulerAngles.z%360), _minRot, _maxRot, _stepRot);
+                        buffer.WriteFloatRounded(Utils.Angles.Mod(pData.Rotation.eulerAngles.x,360), _minRot, _maxRot, _stepRot);
+                        buffer.WriteFloatRounded(Utils.Angles.Mod(pData.Rotation.eulerAngles.x,360), _minRot, _maxRot, _stepRot);
+                        buffer.WriteFloatRounded(Utils.Angles.Mod(pData.Rotation.eulerAngles.x,360), _minRot, _maxRot, _stepRot);
                         buffer.WriteBool(pData.IsExploding);
                     }
                 } catch (Exception e) {

@@ -18,8 +18,4 @@ public class Server : UDPConnection {
         listenThread.IsBackground = true;
         listenThread.Start();
     }
-
-    public void Destroy() {
-        Listening = false;
-    }
 }

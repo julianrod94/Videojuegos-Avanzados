@@ -29,6 +29,13 @@ public abstract class UDPConnection {
                 Debug.Log(err);
             }
         }
+        
+        Debug.Log("Ending Listening");
+    }
+
+    public void Destroy() {
+        Listening = false;
+        client.Close();
     }
 
     public void SendPacket(byte[] data, IPAddress ip, int port) {

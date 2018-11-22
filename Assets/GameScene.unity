@@ -213,6 +213,7 @@ MonoBehaviour:
   Player: {fileID: 807200213}
   isConnected: 0
   eventClient: {fileID: 0}
+  isActive: 0
 --- !u!114 &19086464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adc61e42861d450897bc01cfc73c62d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grenadePrefab: {fileID: 1243235466430786, guid: af877dad50e81b5479eea53417b96afc,
+  grenadePrefab: {fileID: 1597893471832888, guid: 13fb5e80b0338f549afe0032006e9a37,
     type: 2}
   activeGrenades: 0
 --- !u!1 &53684487 stripped
