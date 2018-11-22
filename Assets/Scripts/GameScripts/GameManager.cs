@@ -27,6 +27,20 @@ public class GameManager : MonoBehaviour {
 		isActive = true;
 	}
 
+	public void Die() {
+		isActive = false;
+		//TODO DISABLE ACTIONS
+		GetComponent<CanvasManager>().ShowDied();
+
+	}
+
+	public void Respawn() {
+		isActive = true;
+		Player.GetComponent<Health>().CurrentHealth = 3;
+		Player.transform.position = Vector3.zero;
+		GetComponent<CanvasManager>().ShowHp();
+	}
+
 	private void Update() {
 		Player.SetActive(isActive);
 	}

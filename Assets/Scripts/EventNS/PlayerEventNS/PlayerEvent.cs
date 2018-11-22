@@ -8,7 +8,8 @@ namespace EventNS.PlayerEventNS {
             ThrowGranade,
             Die,
             Connect,
-            Connected
+            Connected,
+            Respawn,
         }
 
         public Type type;
@@ -44,6 +45,10 @@ namespace EventNS.PlayerEventNS {
         
         public static PlayerEvent Connected() {
             return new PlayerEvent(Type.Connected, 0, Vector3.zero);
+        } 
+        
+        public static PlayerEvent Respawn() {
+            return new PlayerEvent(Type.Respawn, 0, Vector3.zero);
         } 
     }
 }

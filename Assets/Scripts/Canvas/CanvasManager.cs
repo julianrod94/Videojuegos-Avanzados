@@ -7,8 +7,11 @@ public class CanvasManager : MonoBehaviour {
     public GameObject HeartTwo;
     public GameObject HeartThree;
     public GameObject Player;
+    public GameObject YouDied;
+    public GameObject RespawnButton;
     private int _lastHP = 3;
     private List<GameObject> hearts;
+    private bool dead = false;
 
 
     private void Awake() {
@@ -31,6 +34,18 @@ public class CanvasManager : MonoBehaviour {
             }
             _lastHP = currentHp;
         }
+    }
+
+    public void ShowDied() {
+        dead = true;
+        DisableAll();
+        YouDied.SetActive(true);
+        RespawnButton.SetActive(true);    
+    }
+
+    public void ShowHp() {
+        DisableAll();
+        dead = false;
     }
 
     private void DisableAll() {
