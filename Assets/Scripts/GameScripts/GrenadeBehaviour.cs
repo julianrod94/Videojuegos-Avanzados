@@ -10,7 +10,8 @@ namespace GameScripts {
 
         private void Update() {
             if (!exploded && isExploding) {
-                _explosion = Instantiate(explosion);
+                _explosion = Instantiate(explosion, transform.position, Quaternion.identity);
+                GetComponent<MeshRenderer>().enabled = false;
                 exploded = true;
                 timeSinceExplotion = Time.time;
             }
