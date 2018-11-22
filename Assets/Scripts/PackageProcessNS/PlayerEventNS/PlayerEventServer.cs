@@ -8,7 +8,7 @@ using UnityEngine.Experimental.UIElements;
 using Debug = UnityEngine.Debug;
 
 public class PlayerEventServer: MonoBehaviour {
-    private PlayerEventChannel _playerEventChannel;
+    public PlayerEventChannel PlayerEventChannel;
     private OtherPlayer _otherPlayer;
     
     private void Start() {
@@ -33,7 +33,7 @@ public class PlayerEventServer: MonoBehaviour {
             
             case PlayerEvent.Type.Connect:
                 Debug.Log("Request to connect from " + _otherPlayer.id);
-                _playerEventChannel.SendEvent(PlayerEvent.Connected());
+                PlayerEventChannel.SendEvent(PlayerEvent.Connected());
                 break;
                 
                     
@@ -41,11 +41,15 @@ public class PlayerEventServer: MonoBehaviour {
     }
 
     public void Damage() {
-        _playerEventChannel.SendEvent(PlayerEvent.Hit(_otherPlayer.id));
+        PlayerEventChannel.SendEvent(PlayerEvent.Hit(_otherPlayer.id));
     }
     
     public void SetupChannels(ChannelManager cm) {
-        _playerEventChannel = new PlayerEventChannel(Process, new ReliableStrategy(100,-1));
-        cm.RegisterChannel((int)RegisteredChannels.PlayerEventChannel, _playerEventChannel);
+        PlayerEventChannel = new PlayerEventChannel(Process, new ReliableStrategy(0.1f,-1));
+        cm.RegisterChannel((int)RegisteredChannels.PlayerEventChannel, PlayerEventChannel);
+    }
+
+    private void OnDestroy() {
+        PlayerEventChannel.Dispose();
     }
 }

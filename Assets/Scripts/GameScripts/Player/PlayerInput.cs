@@ -7,7 +7,6 @@ namespace GameScripts.Player {
         
             float velocity = 25;
             //Running was to easy to escape from the enemies
-            float sprintFactor = 0f;
             float backwardsPercentage = 0.5f;
             float lateralPercentage = 0.8f;
     

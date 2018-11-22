@@ -51,7 +51,6 @@ namespace EventNS.InputSequenceNS {
                     throw;
                 }
 
-                Debug.LogWarning(actions.Count);
                 return actions;
             }
         }

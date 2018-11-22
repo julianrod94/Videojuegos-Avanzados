@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyHit : MonoBehaviour {
 	private GameObject player;
-	private EnemyAnimation animation;
+	private EnemyAnimation enemyAnimation;
 	public float hitRange = 3f;
 
 	private bool hasAttacked = false;
@@ -12,18 +12,18 @@ public class EnemyHit : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		player = PlayerCoordinator.Instance.player;
-		animation = GetComponentInChildren<EnemyAnimation>();
+		enemyAnimation = GetComponentInChildren<EnemyAnimation>();
 	}
 
 	// Update is called once per frame
 	void Update () {
 		if (isPlayerClose()) {
-			if (!animation.attacking) {
+			if (!enemyAnimation.attacking) {
 				AudioManager.Instance.enemyHitting(GetComponentInParent<AudioSource>());
 			}
-			animation.attacking = true;
+			enemyAnimation.attacking = true;
 			
-			if (animation.dealDamage) {
+			if (enemyAnimation.dealDamage) {
 				if (!hasAttacked) {
 					hasAttacked = true;
 					PlayerCoordinator.Instance.dealDamage();
@@ -32,7 +32,7 @@ public class EnemyHit : MonoBehaviour {
 				hasAttacked = false;
 			}
 		} else {
-			animation.attacking = false;
+			enemyAnimation.attacking = false;
 		}
 	}
 

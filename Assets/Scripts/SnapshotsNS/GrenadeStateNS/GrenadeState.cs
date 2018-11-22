@@ -15,7 +15,7 @@ namespace SnapshotsNS.GrenadeStateNS {
         public GrenadeState UpdateState(float progression, GrenadeState target) {
             return new GrenadeState(
                 Vector3.Lerp(Position, target.Position, progression),
-                Quaternion.Lerp(Rotation, target.Rotation, progression),
+                Quaternion.SlerpUnclamped(Rotation, target.Rotation, progression),
                 target.IsExploding
                 );
         }

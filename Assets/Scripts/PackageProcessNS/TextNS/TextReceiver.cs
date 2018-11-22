@@ -21,6 +21,7 @@ public class TextReceiver : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		_textChannel.ToString();
 		text.text = currentString;
 	}
 }

@@ -8,7 +8,8 @@ using Utils;
 
 namespace SenderStrategyNS {
     public class ReliableStrategy: SenderStrategy {
-
+        private int lastACKMessage = 0;
+        
         private struct MessageState {
             public int timesSent;
             public Timer timer;
@@ -68,7 +69,7 @@ namespace SenderStrategyNS {
 
             var state = waiting[messageId];
             state.addTry();
-            if (state.timesSent <= _tries) {
+            if (_tries < 0 || state.timesSent <= _tries) {
                 _sender(state.message);
             } else {
                 lock (this) {
@@ -83,15 +84,24 @@ namespace SenderStrategyNS {
             var messageId = bytes[bytes.Length - 2];
             switch (command) {
                     case NORMAL_MESSAGE_BYTE:
-                        _receiver(ArrayUtils.RemoveBytes(bytes, 2));
-                        SendAck(messageId);
+                        if (messageId > lastACKMessage) {
+                            if (messageId == lastACKMessage + 1) {
+                                lastACKMessage++;
+                                _receiver(ArrayUtils.RemoveBytes(bytes, 2));
+                                SendAck(messageId);
+                            }
+                        } else {
+                            SendAck(messageId);
+                        }
                         break;
                     
                     case ACK_MESSAGE_BYTE:
                         lock (this) {
-                            var state = waiting[messageId];
-                            state.timer.Dispose();
-                            waiting.Remove(messageId);
+                            if (waiting.ContainsKey(messageId)) {
+                                var state = waiting[messageId];
+                                state.timer.Dispose();
+                                waiting.Remove(messageId);
+                            }
                         }
                         break;
                     

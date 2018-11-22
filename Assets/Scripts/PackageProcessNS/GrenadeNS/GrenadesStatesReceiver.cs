@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ChannelNS;
+using GameScripts;
 using SenderStrategyNS;
 using SnapshotsNS.GrenadeStateNS;
 using StateNS;
@@ -10,14 +11,14 @@ public class GrenadesStatesReceiver: MonoBehaviour {
 
     public GameObject grenadePrefab;
     public int activeGrenades = 0;
-    public Dictionary<int, GameObject> grenades = new Dictionary<int, GameObject>();
+    public Dictionary<int, GrenadeBehaviour> grenades = new Dictionary<int, GrenadeBehaviour>();
     private GrenadesChannel _channel;
 
     public void AddGrenade(int id, Vector3 position) {
         GameObject go = Instantiate(grenadePrefab);
         activeGrenades++;
         go.transform.position = position;
-        grenades[id] = go;
+        grenades[id] = go.GetComponent<GrenadeBehaviour>();
     }
     
     private void Start() {
@@ -37,6 +38,8 @@ public class GrenadesStatesReceiver: MonoBehaviour {
                 }
                 var po = grenades[pState.Key];
                 po.transform.position = pState.Value.Position;
+                po.transform.rotation = pState.Value.Rotation;
+                po.isExploding = pState.Value.IsExploding;
             }
 
             if (activeGrenades < currentState._states.Count) {

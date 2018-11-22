@@ -10,7 +10,7 @@ public class PlayerEventClient: MonoBehaviour {
     private PlayerEventChannel _playerEventChannel;
     
     private void Start() {
-        _playerEventChannel = new PlayerEventChannel(Process, new ReliableStrategy(100,-1));
+        _playerEventChannel = new PlayerEventChannel(Process, new ReliableStrategy(0.1f,-1));
         ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerEventChannel, _playerEventChannel);
     }
 
@@ -58,5 +58,9 @@ public class PlayerEventClient: MonoBehaviour {
 
     public void ThrowGranade(Vector3 direction) {
         _playerEventChannel.SendEvent(PlayerEvent.ThrowGranade(direction));
+    }
+
+    private void OnDestroy() {
+        _playerEventChannel.Dispose();
     }
 }

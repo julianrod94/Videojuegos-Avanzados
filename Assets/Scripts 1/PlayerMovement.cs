@@ -55,7 +55,7 @@ public class PlayerMovement: MonoBehaviour {
 	private void jump() {
 		rbody.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 		jumpCD = true;
-		Utils.Delay(100, () => { jumpCD = false; });
+		CDUtils.Delay(100, () => { jumpCD = false; });
 	}
 	
 	

@@ -24,14 +24,21 @@ public abstract class UDPConnection {
                 byte[] data = client.Receive(ref senderIp);
                 passPacket(senderIp.Address, senderIp.Port, data);
             } catch (ThreadAbortException abort) {
-                throw;
+                throw abort;
             } catch (Exception err) {
                 Debug.Log(err);
             }
         }
+        
+        Debug.Log("Ending Listening");
     }
 
-    public void SendPacket(byte[] data, IPAddress ip, int port) {
+    public void Destroy() {
+        Listening = false;
+        client.Close();
+    }
+
+    public virtual void SendPacket(byte[] data, IPAddress ip, int port) {
         Debug.Log("SENDING to " + ip);
         try {
             client.Send(data, data.Length, new IPEndPoint(ip, port));
