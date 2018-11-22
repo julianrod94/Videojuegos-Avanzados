@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class ServerGrenadeBehaviour: MonoBehaviour {
-    private readonly float timeToExplode = 5;
+    private readonly float timeToExplode = 3;
     private float timeWhenThrown;
 
     private void Awake() {
@@ -9,9 +9,9 @@ public class ServerGrenadeBehaviour: MonoBehaviour {
     }
 
     private void Update() {
-        if (Time.time - timeWhenThrown > 5) {
+        if (Time.time - timeWhenThrown > timeToExplode) {
             ServerGameManager.Instance.ExplodeGrenade(transform.position);
-            
+            Destroy(gameObject);
         }
     }
 }

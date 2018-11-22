@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +20,7 @@ public class ServerGameManager: MonoBehaviour {
 
     public void ExplodeGrenade(Vector3 position) {
         foreach (var player in players) {
-            if (Vector3.Distance(player.transform.position, position) < 5) {
+            if (Vector3.Distance(player.transform.position, position) < explosionRadius) {
                 var health = player.GetComponent<Health>();
                 health.Damage(health.CurrentHealth - 1);
             }
@@ -31,8 +30,7 @@ public class ServerGameManager: MonoBehaviour {
     public void RemovePlayer(int id) {
         foreach (var player in players) {
             if (player.GetComponent<OtherPlayer>().id == id) {
-                player.SetActive(false);
-                //TODO ver si se puede borrar de una por codigo
+                Destroy(player.gameObject);
             }
         }
     }
