@@ -11,8 +11,7 @@ public class CanvasManager : MonoBehaviour {
     private List<GameObject> hearts;
 
 
-    private void Awake()
-    {
+    private void Awake() {
         hearts = new List<GameObject>();
         hearts.Add(HeartOne);
         hearts.Add(HeartTwo);

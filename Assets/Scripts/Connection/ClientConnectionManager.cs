@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using ChannelNS;
-using ChannelNS.Implementations.StateChannels;
 using SenderStrategyNS;
+using ServerNS;
 using UnityEngine;
 
 public class ClientConnectionManager : MonoBehaviour {

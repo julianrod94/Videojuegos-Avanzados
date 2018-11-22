@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using ChannelNS;
-using ChannelNS.Implementations.StateChannels;
 using SenderStrategyNS;
+using ServerNS;
 using UnityEngine;
 
 public class ServerConnectionManager : MonoBehaviour {
