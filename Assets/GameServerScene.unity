@@ -482,7 +482,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7be8af3f0bdf468bbcf467e95eef2d4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 1043801822641488, guid: a40117b37a87b41b093d303ea2ea91f6,
+  playerPrefab: {fileID: 1376840591652346, guid: a40117b37a87b41b093d303ea2ea91f6,
     type: 2}
   Port: 5000
   initializedPlayers: 0

@@ -27,12 +27,18 @@ public class ServerGameManager: MonoBehaviour {
             }
         }
         foreach (var playerId in toRespawn) {
-            players[playerId].GetComponent<MeshRenderer>().enabled = true;
+//            players[playerId].GetComponentInChildren<RenderContainer>().renderer.SetActive(false);
             players[playerId].GetComponent<Health>().CurrentHealth = 3;
             players[playerId].transform.position = Vector3.zero;
         }
         foreach (var playerId in killed) {
-            players[playerId].GetComponent<MeshRenderer>().enabled = false;
+            if (players[playerId] == null) {
+                Debug.LogError("WTF IS NOT HERE");
+            } else {
+                //TODO
+//                Debug.Log(players[playerId].GetComponentInChildren<RenderContainer>());
+//                players[playerId].GetComponentInChildren<RenderContainer>().renderer.SetActive(false);
+            }
         }
 
         if (toRespawn.Count > 0) {
@@ -51,7 +57,7 @@ public class ServerGameManager: MonoBehaviour {
 
     public void AddPlayer(GameObject player, int id, ChannelManager cm) {
         players.Add(id, player);
-//        ServerKeepAliveManager.Instance.AddPlayer(id, cm);
+        ServerKeepAliveManager.Instance.AddPlayer(id, cm);
     }
 
     public void ExplodeGrenade(Vector3 position) {
@@ -78,6 +84,7 @@ public class ServerGameManager: MonoBehaviour {
     }
     
     public void RemovePlayer(int id) {
+        return;
         if(toRespawn.Contains(id)) toRespawn.Remove(id);
         if(killed.Contains(id)) killed.Remove(id);
         toRemove.Add(id);
