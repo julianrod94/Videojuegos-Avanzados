@@ -69,7 +69,7 @@ public class ServerConnectionManager : MonoBehaviour {
             newPlayer.GetComponent<OtherPlayer>().id = id;
             newPlayer.GetComponent<PlayerMovementProvider>().SetupChannels(cm);
             GrenadeStatesProvider.Instance.SetupChannel(id, cm);
-            ServerGameManager.Instance.AddPlayer(newPlayer);
+            ServerGameManager.Instance.AddPlayer(newPlayer, id);
             var pEvent = newPlayer.GetComponent<PlayerEventServer>();
             pEvent.SetupChannels(cm);
             initializedPlayers++;

@@ -19,6 +19,7 @@ public class CanvasManager : MonoBehaviour {
         hearts.Add(HeartOne);
         hearts.Add(HeartTwo);
         hearts.Add(HeartThree);
+        DisableAll();
     }
 
     // Update is called once per frame
