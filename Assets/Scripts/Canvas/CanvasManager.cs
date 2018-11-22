@@ -20,20 +20,25 @@ public class CanvasManager : MonoBehaviour {
         hearts.Add(HeartTwo);
         hearts.Add(HeartThree);
         DisableAll();
+        HeartOne.SetActive(true);
+        HeartTwo.SetActive(true);
+        HeartThree.SetActive(true);
     }
 
     // Update is called once per frame
     void Update ()
     {
-        int currentHp = Player.GetComponent<Health>().GetCurrentHealth();
-        if (_lastHP != currentHp)
-        {
-            DisableAll();
-            for (int i = 0; i < currentHp; i++)
+        if (!dead) {
+            int currentHp = Player.GetComponent<Health>().GetCurrentHealth();
+            if (_lastHP != currentHp)
             {
-                hearts[i].SetActive(true);
-            }
-            _lastHP = currentHp;
+                DisableAll();
+                for (int i = 0; i < currentHp; i++)
+                {
+                    hearts[i].SetActive(true);
+                }
+                _lastHP = currentHp;
+            } 
         }
     }
 
@@ -53,5 +58,7 @@ public class CanvasManager : MonoBehaviour {
         HeartOne.SetActive(false);
         HeartTwo.SetActive(false);
         HeartThree.SetActive(false);
+        YouDied.SetActive(false);
+        RespawnButton.SetActive(false);
     }
 }
