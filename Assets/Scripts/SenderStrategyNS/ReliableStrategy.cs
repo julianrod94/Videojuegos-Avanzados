@@ -8,7 +8,7 @@ using Utils;
 
 namespace SenderStrategyNS {
     public class ReliableStrategy: SenderStrategy {
-        private int lastACKMessage = 0;
+        private Dictionary<int, float> alreadyAcked = new Dictionary<int, float>();
         
         private struct MessageState {
             public int timesSent;
@@ -59,10 +59,12 @@ namespace SenderStrategyNS {
 
                 TimerCallback tc = (state) => ReSendPackage((byte) state);
                 waiting.Add(_messageIdCount, new MessageState(new Timer(tc, _messageIdCount, 0, _timeout), newMessage));
+                _messageIdCount++;
             }
         }
 
         private void ReSendPackage(byte messageId) {
+            Debug.Log("RESENDING PACKAGE " + messageId);
             if (!waiting.ContainsKey(messageId)) {
                 throw new ExecutionEngineException("There was a problem where a timer was leaked");
             }
@@ -80,14 +82,19 @@ namespace SenderStrategyNS {
         }
 
         public override void ReceivePackage(byte[] bytes) {
+            var now = DateTime.Now.Second;
+            
             var command = bytes[bytes.Length - 1];
             var messageId = bytes[bytes.Length - 2];
             switch (command) {
-                    case NORMAL_MESSAGE_BYTE:
-                                lastACKMessage++;
-                                _receiver(ArrayUtils.RemoveBytes(bytes, 2));
-                                SendAck(messageId);
-                        break;
+                case NORMAL_MESSAGE_BYTE:
+                    if(!alreadyAcked.ContainsKey(messageId) || 
+                        alreadyAcked[messageId] - now >= 1) {
+                        _receiver(ArrayUtils.RemoveBytes(bytes, 2));
+                        alreadyAcked[messageId] = now;
+                    }
+                    SendAck(messageId);
+                    break;
                     
                     case ACK_MESSAGE_BYTE:
                         lock (this) {

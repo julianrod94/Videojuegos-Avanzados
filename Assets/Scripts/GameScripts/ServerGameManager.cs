@@ -6,7 +6,7 @@ public class ServerGameManager: MonoBehaviour {
     
     public static ServerGameManager Instance;
     private List<GameObject> players = new List<GameObject>();
-    private readonly float explosionRadius = 5;
+    private readonly float explosionRadius = 25;
     
     private void Awake() {
         if (Instance == null) {
