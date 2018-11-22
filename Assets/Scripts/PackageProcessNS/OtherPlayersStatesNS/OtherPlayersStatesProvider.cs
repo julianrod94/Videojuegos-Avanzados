@@ -17,7 +17,6 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
     public Dictionary<int, Health> players = new Dictionary<int, Health>();
     public Dictionary<int, OtherPlayersChannel> playersChannel = new Dictionary<int, OtherPlayersChannel>();
 
-    
     public class OtherPlayersStatesBridge: IUnityBridgeState<OtherPlayersStates> {
 
         private int _playerTarget;
@@ -38,7 +37,6 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
             return new OtherPlayersStates(lastState.TimeStamp(), newDict);
         }
     }
-
 
     private void Awake() {
         Instance = this;

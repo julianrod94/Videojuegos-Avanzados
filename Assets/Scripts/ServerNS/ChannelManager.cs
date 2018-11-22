@@ -19,13 +19,14 @@ namespace ServerNS {
         }
 
         public void RegisterChannel(byte number, GenericChannel channel) {
-            Debug.LogWarning("REGISTERING CHANNEL" + number);
+            Debug.Log("REGISTERING CHANNEL" + number);
             _channelNumbers[channel] = number;
             _channels[number] = channel;
             channel.SetupSender(bytes => SendPacket(bytes, channel, ip, port));
         }
 
         private void SendPacket(byte[] bytes, GenericChannel channel, IPAddress ip, int port) {
+            Debug.Log("Sending Package");
             _connection.SendPacket(ArrayUtils.AddByteToArray(bytes, _channelNumbers[channel]), ip, port);
         }
 

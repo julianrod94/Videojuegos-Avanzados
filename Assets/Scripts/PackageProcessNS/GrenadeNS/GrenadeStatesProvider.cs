@@ -10,26 +10,26 @@ using UnityEngine;
 
 public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesState> {
     
+    public static GrenadeStatesProvider Instance;
+    
     public GameObject grenadePrefab;
     public int grenadeCount = 0;
-    public static GrenadeStatesProvider Instance;
+    
     public GrenadesState LastState;
-    private Queue<initialConditions> _toInstantiate = new Queue<initialConditions>();
+    private Queue<InitialConditions> _toInstantiate = new Queue<InitialConditions>();
     private Dictionary<int, GrenadesChannel> _channels = new Dictionary<int, GrenadesChannel>();    
-    
-    
-    private struct initialConditions {
-        public initialConditions(int playerId, Quaternion rotation) {
-            this.playerId = playerId;
+    public Dictionary<int, GrenadeBehaviour> grenades = new Dictionary<int, GrenadeBehaviour>();
+
+    private struct InitialConditions {
+        public InitialConditions(int playerId, Quaternion rotation) {
+            this.PlayerId = playerId;
             this.rotation = rotation;
         }
         
-        public int playerId;
+        public int PlayerId;
         public Quaternion rotation;
     }
-
     
-    public Dictionary<int, GrenadeBehaviour> grenades = new Dictionary<int, GrenadeBehaviour>();
     private void Awake() {
         Instance = this;
     }
@@ -49,7 +49,7 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
         while (_toInstantiate.Count > 0) {
             var conditions = _toInstantiate.Dequeue();
             var newGrenade = Instantiate(grenadePrefab, 
-                OtherPlayersStatesProvider.Instance.players[conditions.playerId].gameObject.transform.position,
+                OtherPlayersStatesProvider.Instance.players[conditions.PlayerId].gameObject.transform.position,
                 conditions.rotation);
             newGrenade.GetComponent<Rigidbody>().AddForce(Vector3.forward * 5, ForceMode.Impulse);
             grenades[grenadeCount++] = newGrenade.GetComponent<GrenadeBehaviour>();
@@ -70,7 +70,7 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
     }
 
     public void GenerateGrenade(int playerId, Vector3 rotation) {
-        _toInstantiate.Enqueue(new initialConditions(playerId, Quaternion.Euler(rotation))); 
+        _toInstantiate.Enqueue(new InitialConditions(playerId, Quaternion.Euler(rotation))); 
     }
 
     private void OnDestroy() {

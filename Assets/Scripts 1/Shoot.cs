@@ -8,7 +8,7 @@ public class Shoot : MonoBehaviour {
 	private PlayerEventClient client;
 
 	void Start() {
-		client = GetComponentInParent<PlayerEventClient>();
+		client = GameManager.Instance.eventClient;
 	}
 	
 	void Update () {

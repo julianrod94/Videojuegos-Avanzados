@@ -9,15 +9,9 @@ using UnityEngine;
 public class GrenadesStatesReceiver: MonoBehaviour {
 
     public GameObject grenadePrefab;
-    private static GrenadesStatesReceiver Instance;
-
     public int activeGrenades = 0;
-    
     public Dictionary<int, GameObject> grenades = new Dictionary<int, GameObject>();
     private GrenadesChannel _channel;
-    private void Awake() {
-        Instance = this;
-    }
 
     public void AddGrenade(int id, Vector3 position) {
         GameObject go = Instantiate(grenadePrefab);
@@ -31,7 +25,6 @@ public class GrenadesStatesReceiver: MonoBehaviour {
         ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.GrenadeStatesChannel, _channel);
         _channel.Interpolator.StartInterpolating();
     }
-
 
     private void FixedUpdate() {
         _channel.Interpolator.Update(Time.deltaTime);

@@ -6,7 +6,9 @@ namespace EventNS.PlayerEventNS {
             Shoot = 1,
             Hit,
             ThrowGranade,
-            Die
+            Die,
+            Connect,
+            Connected
         }
 
         public Type type;
@@ -34,6 +36,14 @@ namespace EventNS.PlayerEventNS {
 
         public static PlayerEvent Die() {
             return new PlayerEvent(Type.Die, 0, Vector3.zero);
+        } 
+        
+        public static PlayerEvent Connect() {
+            return new PlayerEvent(Type.Connect, 0, Vector3.zero);
+        } 
+        
+        public static PlayerEvent Connected() {
+            return new PlayerEvent(Type.Connected, 0, Vector3.zero);
         } 
     }
 }

@@ -9,14 +9,9 @@ using UnityEngine;
 public class OtherPlayersStatesReceiver: MonoBehaviour {
 
     public GameObject otherPlayerPrefab;
-    private static OtherPlayersStatesReceiver Instance;
     private int _activePlayers = 0;
-    
     public Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
     private OtherPlayersChannel _channel;
-    private void Awake() {
-        Instance = this;
-    }
 
     public void AddPlayer(int id, Vector3 position) {
         GameObject go = Instantiate(otherPlayerPrefab);
@@ -31,7 +26,6 @@ public class OtherPlayersStatesReceiver: MonoBehaviour {
         ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.OtherPlayersChannel, _channel);
         _channel.Interpolator.StartInterpolating();
     }
-
 
     private void FixedUpdate() {
         _channel.Interpolator.Update(Time.deltaTime);

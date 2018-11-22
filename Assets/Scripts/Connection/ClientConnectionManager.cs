@@ -30,7 +30,7 @@ public class ClientConnectionManager : MonoBehaviour {
             } catch (Exception e) {
                 Debug.LogError(e);
             }
-            Debug.Log("SUCCESFUL  " + client.LocalPort);
+            Debug.Log("SUCCESFULLY OPEN PORT: " + client.LocalPort);
         } else {
             Destroy(this);
         }

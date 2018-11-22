@@ -124,6 +124,9 @@ GameObject:
   - component: {fileID: 19086458}
   - component: {fileID: 19086460}
   - component: {fileID: 19086461}
+  - component: {fileID: 19086464}
+  - component: {fileID: 19086463}
+  - component: {fileID: 19086462}
   m_Layer: 0
   m_Name: ConnectionManagerClient
   m_TagString: Untagged
@@ -155,7 +158,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &19086460
 MonoBehaviour:
@@ -184,34 +187,38 @@ MonoBehaviour:
   HeartOne: {fileID: 431389929}
   HeartTwo: {fileID: 2126378939}
   HeartThree: {fileID: 53684487}
-  Player: {fileID: 0}
---- !u!1 &53684487 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1822558669798308, guid: 98803367dc850c94dacc314476fbdd89,
-    type: 2}
-  m_PrefabInternal: {fileID: 1909451062}
---- !u!1 &168788814
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 168788816}
-  - component: {fileID: 168788815}
-  m_Layer: 0
-  m_Name: GrenadeReceiver
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &168788815
+  Player: {fileID: 807200213}
+--- !u!114 &19086462
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 168788814}
+  m_GameObject: {fileID: 19086457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d49413f674a147e4ade5bc19a4344dc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &19086463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 19086457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa3be8adcb9f46940ba8813e9c273e38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 807200213}
+  isConnected: 0
+  eventClient: {fileID: 0}
+--- !u!114 &19086464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 19086457}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: adc61e42861d450897bc01cfc73c62d5, type: 3}
@@ -220,19 +227,11 @@ MonoBehaviour:
   grenadePrefab: {fileID: 1243235466430786, guid: af877dad50e81b5479eea53417b96afc,
     type: 2}
   activeGrenades: 0
---- !u!4 &168788816
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 168788814}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 58.911407, y: 12.6203985, z: 18.341187}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &53684487 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1822558669798308, guid: 98803367dc850c94dacc314476fbdd89,
+    type: 2}
+  m_PrefabInternal: {fileID: 1909451062}
 --- !u!1 &217641144
 GameObject:
   m_ObjectHideFlags: 0
@@ -615,11 +614,17 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4862818118073372, guid: 6376aa3c08f3edc4aacf8f98429be4c7, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114406114893397338, guid: 6376aa3c08f3edc4aacf8f98429be4c7, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 6376aa3c08f3edc4aacf8f98429be4c7, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1 &807200213 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1573498664259950, guid: 6376aa3c08f3edc4aacf8f98429be4c7,
+    type: 2}
+  m_PrefabInternal: {fileID: 807200212}
 --- !u!1 &863394589
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,7 +10,7 @@ public class PlayerEventClient: MonoBehaviour {
     private PlayerEventChannel _playerEventChannel;
     
     private void Start() {
-        _playerEventChannel = new PlayerEventChannel((e) => Process(e), new TrivialStrategy());
+        _playerEventChannel = new PlayerEventChannel(Process, new ReliableStrategy(100,-1));
         ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerEventChannel, _playerEventChannel);
     }
 
@@ -23,7 +23,17 @@ public class PlayerEventClient: MonoBehaviour {
                 case PlayerEvent.Type.Die:
                     Debug.Log("DEAD");
                     break;
+                
+            case PlayerEvent.Type.Connected:
+                Debug.Log("Connected");
+                GameManager.Instance.Connected();
+                break;
         }
+    }
+
+    public void Connect() {
+        Debug.Log("Connecting");
+        _playerEventChannel.SendEvent(PlayerEvent.Connect());
     }
 
     public void Shoot(float weaponRange, Transform origin) {

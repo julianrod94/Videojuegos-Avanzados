@@ -43,6 +43,12 @@ namespace EventNS.PlayerEventNS {
                         
                         case PlayerEvent.Type.Shoot:
                             return PlayerEvent.Shoot();
+                        
+                        case PlayerEvent.Type.Connect:
+                            return PlayerEvent.Connect();
+                        
+                        case PlayerEvent.Type.Connected:
+                            return PlayerEvent.Connected();
                     }
                 } catch (Exception e) {
                     Debug.LogError(e);
