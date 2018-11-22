@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using ChannelNS;
 using EventNS.keepAliveNS;
@@ -22,12 +23,14 @@ namespace PackageProcessNS.KeepAliveNS {
             var channel = new KeepAliveChannel((b => {
                 if (_lastKeepAlives.ContainsKey(id)) {
                     _lastKeepAlives[id] = CurrentTime.Time;
+                    Debug.Log("Receiving KEEP ALIVE");
                 }
             } ), new ReliableStrategy(0.1f, 20));
 
             cm.RegisterChannel((int) RegisteredChannels.KeepAliveChannel, channel);
             _keepAlives[id] = channel;
             _lastKeepAlives[id] = CurrentTime.Time;
+            StartCoroutine(SendKeepAlive(id));
         }
 
         void RemovePlayer(int id) {
@@ -38,6 +41,14 @@ namespace PackageProcessNS.KeepAliveNS {
             }
         }
 
+        IEnumerator SendKeepAlive(int id) {
+            while (_keepAlives.ContainsKey(id)) {
+                Debug.Log("SENDING KEEP ALIVE");
+                _keepAlives[id].SendEvent(true);
+                yield return new WaitForSeconds(1);
+            }
+        }
+        
         private void Update() {
             var dced = new List<int>();
             foreach (var lastKeepAlive in _lastKeepAlives) {
