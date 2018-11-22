@@ -68,7 +68,7 @@ namespace SenderStrategyNS {
 
             var state = waiting[messageId];
             state.addTry();
-            if (state.timesSent <= _tries) {
+            if (_tries < 0 || state.timesSent <= _tries) {
                 _sender(state.message);
             } else {
                 lock (this) {

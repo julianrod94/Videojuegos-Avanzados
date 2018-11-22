@@ -53,7 +53,7 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
 
             playersChannel[id] = channel;
             players[id] = health;
-            Debug.LogError("NOW THERE ARE  " + players.Count );
+            Debug.Log("Players connected  " + players.Count);
             cm.RegisterChannel((int)RegisteredChannels.OtherPlayersChannel, channel);
             
             channel.StartSending();

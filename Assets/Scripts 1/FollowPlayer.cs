@@ -7,16 +7,15 @@ public class FollowPlayer : MonoBehaviour {
 	private NavMeshAgent agent;
 	private float lastVel = 0;
 	private bool alive = true;
-	private EnemyAnimation animation;
+	private EnemyAnimation enemyAnimation;
 	private bool hasTarget = false;
 
 	private bool stopped = false;
-	private float lastTime = 0;
 
 	// Use this for initialization
 	void Start () {
 		agent = GetComponent<NavMeshAgent>();
-		animation = GetComponentInChildren<EnemyAnimation>();
+		enemyAnimation = GetComponentInChildren<EnemyAnimation>();
 	}
 	
 	// Update is called once per frame
@@ -25,7 +24,7 @@ public class FollowPlayer : MonoBehaviour {
 			return;
 		}
 		
-		if (animation.attacking || stopped) {
+		if (enemyAnimation.attacking || stopped) {
 			Stop();
 			return;
 		}
@@ -43,7 +42,7 @@ public class FollowPlayer : MonoBehaviour {
 
 		if (!hasTarget) {
 			agent.SetDestination(dest);
-			Utils.Delay(200,() => { hasTarget = false; });
+			CDUtils.Delay(200,() => { hasTarget = false; });
 		}
 		transform.LookAt(dest);
 	}
@@ -57,13 +56,13 @@ public class FollowPlayer : MonoBehaviour {
 		SpawnerCoordinator.Instance.enemies--;
 		alive = false;
 		if (agent.isActiveAndEnabled) {
-			agent.Stop();
+			agent.isStopped = true;
 		}
 		Collider[] colliders = GetComponentsInChildren<Collider>();
 		for (int i = 0; i < colliders.Length; i++) {
 			colliders[i].enabled = false;
 		}
-		animation.dead = true;
+		enemyAnimation.dead = true;
 		agent.enabled = false;
 		
 		Invoke("Destroy",2);

@@ -21,11 +21,9 @@ namespace EventNS.PlayerEventNS {
         
         protected override PlayerEvent DeserializeData(byte[] bytes) {
             lock (this) {
-                PlayerEvent pEvent;
                 try {
                     buffer.LoadBytes(bytes);
                     buffer.ToRead();
-                    int player = 0;
                     var eventType = (PlayerEvent.Type)buffer.ReadInt(0, _playerEvents);
                     switch (eventType) {
                         case PlayerEvent.Type.ThrowGranade:

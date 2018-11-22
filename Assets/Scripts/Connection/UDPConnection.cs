@@ -24,7 +24,7 @@ public abstract class UDPConnection {
                 byte[] data = client.Receive(ref senderIp);
                 passPacket(senderIp.Address, senderIp.Port, data);
             } catch (ThreadAbortException abort) {
-                throw;
+                throw abort;
             } catch (Exception err) {
                 Debug.Log(err);
             }

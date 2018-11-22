@@ -19,20 +19,22 @@ namespace ServerNS {
         }
 
         public void RegisterChannel(byte number, GenericChannel channel) {
-            Debug.Log("REGISTERING CHANNEL" + number);
             _channelNumbers[channel] = number;
             _channels[number] = channel;
             channel.SetupSender(bytes => SendPacket(bytes, channel, ip, port));
         }
 
         private void SendPacket(byte[] bytes, GenericChannel channel, IPAddress ip, int port) {
-            Debug.Log("Sending Package");
             _connection.SendPacket(ArrayUtils.AddByteToArray(bytes, _channelNumbers[channel]), ip, port);
         }
 
         public void ReceivePacket(byte[] bytes) {
             var channelNumber = bytes[bytes.Length - 1];
-            _channels[channelNumber].ReceivePackage(ArrayUtils.RemoveBytes(bytes, 1));
+            if (!_channels.ContainsKey(channelNumber)) {
+                Debug.LogError("NO SUCH CHANNEL REGISTERED " + channelNumber);
+            } else {
+                _channels[channelNumber].ReceivePackage(ArrayUtils.RemoveBytes(bytes, 1));
+            }
         }
     }
 }

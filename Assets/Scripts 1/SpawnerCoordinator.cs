@@ -14,7 +14,6 @@ public class SpawnerCoordinator : MonoBehaviour {
 	private float spawnWindow = 2.4f;
 	private int i = 0;
 	private bool spawning = false;
-	private float initialTime;
 	
 	private SpawnerCoordinator() {
 	}
@@ -36,7 +35,6 @@ public class SpawnerCoordinator : MonoBehaviour {
 	}
 	// Use this for initialization
 	void Start () {
-		initialTime = Time.time;
 		GameObject[] objects = GameObject.FindGameObjectsWithTag(Tags.spawn);
 		IOrderedEnumerable<GameObject> list = new List<GameObject>(objects).OrderBy(o => o.transform.position.z);
 		spawners = list.Select(o => o.GetComponent<EnemySpawner>()).ToArray();

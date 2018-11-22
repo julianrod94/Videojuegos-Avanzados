@@ -13,8 +13,8 @@ using UnityEngine;
 
 public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<PlayerPosition> {
     private InputManager _inputManager = new InputManager();
-    private StateChannel<PlayerPosition> _cubeChannel;
-    private InputSequenceEventChannel _channel;
+    private StateChannel<PlayerPosition> _positionChannel;
+    private InputSequenceEventChannel _inputChannel;
     
     private PlayerPosition currentState;
     private PlayerPosition _lastUpdatedState;
@@ -26,10 +26,10 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<PlayerPosi
     // Use this for initialization
     private void Start() {
         _lastUpdatedState = new PlayerPosition(Time.time, transform.position, -1, GetComponent<Health>().GetCurrentHealth());
-        _cubeChannel = new PlayerPositionStateChannel(this, new TrivialStrategy(), 0.1f);
-        _channel = new InputSequenceEventChannel((a) => { },new TrivialStrategy());
-        ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerPositionChannel, _cubeChannel);
-        ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerInputChannel, _channel);
+        _positionChannel = new PlayerPositionStateChannel(this, new TrivialStrategy(), 0.1f);
+        _inputChannel = new InputSequenceEventChannel((a) => { },new TrivialStrategy());
+        ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerPositionChannel, _positionChannel);
+        ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerInputChannel, _inputChannel);
         GetComponent <Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; 
     }
 
@@ -55,11 +55,11 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<PlayerPosi
         }
 
         if (_inputManager.Count() > 0) {
-            _channel.SendEvent(_inputManager.Inputs());
+            _inputChannel.SendEvent(_inputManager.Inputs());
         }
 
-       _cubeChannel.Interpolator.Update(Time.deltaTime);
-        currentState = _cubeChannel.Interpolator.PastState;
+       _positionChannel.Interpolator.Update(Time.deltaTime);
+        currentState = _positionChannel.Interpolator.PastState;
         
         if (currentState != null)
         {
@@ -84,7 +84,8 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<PlayerPosi
     }
 
     private void OnDestroy() {
-        _cubeChannel.Dispose();
+        _positionChannel.Dispose();
+        _inputChannel.Dispose();
     }
 
 }

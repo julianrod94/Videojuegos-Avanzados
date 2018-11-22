@@ -9,19 +9,25 @@ public class GameManager : MonoBehaviour {
 	public GameObject Player;
 	public bool isConnected;
 	public PlayerEventClient eventClient;
+	public bool isActive = false;
 	
 
 	private void Awake() {
 		Instance = this;
-		GetComponent<PlayerEventClient>();
+		eventClient = GetComponent<PlayerEventClient>();
 	}
 
 	private void Start() {
 		Player.SetActive(false);
+		isActive = false;
 		eventClient.Connect();
 	}
 
 	public void Connected() {
-		Player.SetActive(true);
+		isActive = true;
+	}
+
+	private void Update() {
+		Player.SetActive(isActive);
 	}
 }

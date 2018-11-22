@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using ChannelNS;
+using EventNS.PlayerEventNS;
 using SenderStrategyNS;
 using ServerNS;
 using UnityEngine;
@@ -67,9 +68,11 @@ public class ServerConnectionManager : MonoBehaviour {
             var id = OtherPlayersStatesProvider.Instance.AddPlayer(health, cm);
             newPlayer.GetComponent<OtherPlayer>().id = id;
             newPlayer.GetComponent<PlayerMovementProvider>().SetupChannels(cm);
-            newPlayer.GetComponent<PlayerEventServer>().SetupChannels(cm);
             GrenadeStatesProvider.Instance.SetupChannel(id, cm);
+            var pEvent = newPlayer.GetComponent<PlayerEventServer>();
+            pEvent.SetupChannels(cm);
             initializedPlayers++;
+            pEvent.PlayerEventChannel.SendEvent(PlayerEvent.Connected());
         }
     }
 

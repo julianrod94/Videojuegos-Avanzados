@@ -111,7 +111,6 @@ public class BitbufferTest {
     
     [Test]
     public void inputs() {
-        var inputM = new InputManager();
         Bitbuffer buffer = new Bitbuffer();
         var data = new List<PlayerAction>();
         

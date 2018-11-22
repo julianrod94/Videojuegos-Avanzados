@@ -13,7 +13,7 @@ public class PlayerMovementProvider: MonoBehaviour, IUnityBridgeState<PlayerPosi
 
 	private readonly InputManager _inputManager = new InputManager();
 
-    private StateChannel<PlayerPosition> _cubeChannel;
+    private StateChannel<PlayerPosition> _positionChannel;
     private InputSequenceEventChannel _inputChannel;
     private int _lastAppliedInput = 0;
     
@@ -30,9 +30,9 @@ public class PlayerMovementProvider: MonoBehaviour, IUnityBridgeState<PlayerPosi
     }
 
     public void SetupChannels(ChannelManager cm) {
-        _cubeChannel = new PlayerPositionStateChannel(this, new TrivialStrategy(), 0.1f);
-       cm.RegisterChannel((int)RegisteredChannels.PlayerPositionChannel, _cubeChannel);
-        _cubeChannel.StartSending();
+        _positionChannel = new PlayerPositionStateChannel(this, new TrivialStrategy(), 0.1f);
+       cm.RegisterChannel((int)RegisteredChannels.PlayerPositionChannel, _positionChannel);
+        _positionChannel.StartSending();
         
         
         _inputChannel = new InputSequenceEventChannel((a) => {
@@ -57,7 +57,8 @@ public class PlayerMovementProvider: MonoBehaviour, IUnityBridgeState<PlayerPosi
     }
 
     private void OnDestroy() {
-        _cubeChannel.Dispose();
+        _positionChannel.Dispose();
+        _inputChannel.Dispose();
     }
 }
 
