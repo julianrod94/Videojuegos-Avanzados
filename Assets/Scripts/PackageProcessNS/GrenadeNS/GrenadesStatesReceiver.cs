@@ -15,6 +15,7 @@ public class GrenadesStatesReceiver: MonoBehaviour {
     private GrenadesChannel _channel;
 
     public void AddGrenade(int id, Vector3 position) {
+        Debug.Log("GRANADE");
         GameObject go = Instantiate(grenadePrefab);
         activeGrenades++;
         go.transform.position = position;

@@ -18,7 +18,7 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
     public GrenadesState LastState;
     private Queue<InitialConditions> _toInstantiate = new Queue<InitialConditions>();
     private Dictionary<int, GrenadesChannel> _channels = new Dictionary<int, GrenadesChannel>();    
-    public Dictionary<int, GrenadeBehaviour> grenades = new Dictionary<int, GrenadeBehaviour>();
+    public Dictionary<int, ServerGrenadeBehaviour> grenades = new Dictionary<int, ServerGrenadeBehaviour>();
 
     private struct InitialConditions {
         public InitialConditions(int playerId, Quaternion rotation) {
@@ -52,19 +52,27 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
                 OtherPlayersStatesProvider.Instance.players[conditions.PlayerId].gameObject.transform.position,
                 conditions.rotation);
             newGrenade.GetComponent<Rigidbody>().AddForce(Vector3.forward * 5, ForceMode.Impulse);
-            grenades[grenadeCount++] = newGrenade.GetComponent<GrenadeBehaviour>();
+            grenades[grenadeCount++] = newGrenade.GetComponent<ServerGrenadeBehaviour>();
         }
         
         var newDict = new Dictionary<int, GrenadeState>();
+        var destroyed = new List<int>();
         foreach (var keyValuePair in grenades) {
             var po = keyValuePair.Value;
-            
-            newDict[keyValuePair.Key] = new GrenadeState(
-                po.gameObject.transform.position, 
-                po.gameObject.transform.rotation, 
-                po.isExploding
-            );
+
+            if (po == null) {
+                destroyed.Add(keyValuePair.Key);
+            } else {
+
+                newDict[keyValuePair.Key] = new GrenadeState(
+                    po.gameObject.transform.position,
+                    po.gameObject.transform.rotation,
+                    po.isExploding
+                );
+            }
         }
+        
+        destroyed.ForEach((i) => grenades.Remove(i));
         
         LastState = new GrenadesState(Time.time, newDict);
     }
