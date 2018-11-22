@@ -9,9 +9,8 @@ public class CanvasManager : MonoBehaviour {
     public GameObject Player;
     public GameObject YouDied;
     public GameObject RespawnButton;
-    private int _lastHP = 3;
     private List<GameObject> hearts;
-    private bool dead = false;
+    public bool dead = false;
 
 
     private void Awake() {
@@ -26,24 +25,22 @@ public class CanvasManager : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update ()
-    {
-        if (!dead) {
-            int currentHp = Player.GetComponent<Health>().GetCurrentHealth();
-            if (_lastHP != currentHp)
+    void Update () {
+        var hp = Player.GetComponent<Health>().GetCurrentHealth();
+        if (hp > 0) {
+            DisableAll();
+            for (int i = 0; i < hp; i++)
             {
-                DisableAll();
-                for (int i = 0; i < currentHp; i++)
-                {
-                    hearts[i].SetActive(true);
-                }
-                _lastHP = currentHp;
-            } 
+                hearts[i].SetActive(true);
+            }
+           
+        }
+        else {
+            ShowDied();
         }
     }
 
     public void ShowDied() {
-        dead = true;
         DisableAll();
         YouDied.SetActive(true);
         RespawnButton.SetActive(true);    
@@ -51,6 +48,9 @@ public class CanvasManager : MonoBehaviour {
 
     public void ShowHp() {
         DisableAll();
+        HeartOne.SetActive(true);
+        HeartTwo.SetActive(true);
+        HeartThree.SetActive(true);
         dead = false;
     }
 
