@@ -76,6 +76,9 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
             var po = keyValuePair.Value;
             
             newDict[keyValuePair.Key] = new OtherPlayerState(po.transform.position, po.transform.rotation);
+            if (po.GetComponent<Health>().GetCurrentHealth() <= 0) {
+                ServerGameManager.Instance.KillPlayer(keyValuePair.Key);
+            }
         }
         
         LastState = new OtherPlayersStates(Time.time, newDict);

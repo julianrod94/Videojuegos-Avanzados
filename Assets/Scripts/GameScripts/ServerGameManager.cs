@@ -9,9 +9,9 @@ public class ServerGameManager: MonoBehaviour {
     
     public static ServerGameManager Instance;
     private Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
-    private List<int> toRespawn = new List<int>();
-    private List<int> toRemove = new List<int>();
-    private List<int> killed = new List<int>();
+    private HashSet<int> toRespawn = new HashSet<int>();
+    private HashSet<int> toRemove = new HashSet<int>();
+    private HashSet<int> killed = new HashSet<int>();
     private readonly float explosionRadius = 25;
     
     private void Awake() {
@@ -42,7 +42,7 @@ public class ServerGameManager: MonoBehaviour {
         }
 
         if (toRespawn.Count > 0) {
-            toRespawn = new List<int>();
+            toRespawn = new HashSet<int>();
         }
 
         foreach (var playerId in toRemove) {
@@ -51,13 +51,13 @@ public class ServerGameManager: MonoBehaviour {
         }
 
         if (toRemove.Count > 0) {
-            toRemove = new List<int>();
+            toRemove = new HashSet<int>();
         }
     }
 
     public void AddPlayer(GameObject player, int id, ChannelManager cm) {
         players.Add(id, player);
-        ServerKeepAliveManager.Instance.AddPlayer(id, cm);
+//        ServerKeepAliveManager.Instance.AddPlayer(id, cm);
     }
 
     public void ExplodeGrenade(Vector3 position) {
@@ -79,8 +79,10 @@ public class ServerGameManager: MonoBehaviour {
     }
 
     public void RespawnPlayer(int id) {
-        if(killed.Contains(id)) killed.Remove(id);
-        toRespawn.Add(id);
+        if (IsPlayerDead(id)) { 
+            killed.Remove(id);    
+            toRespawn.Add(id);
+        }
     }
     
     public void RemovePlayer(int id) {
