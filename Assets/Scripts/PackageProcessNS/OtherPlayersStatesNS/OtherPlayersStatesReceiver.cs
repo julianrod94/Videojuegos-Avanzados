@@ -41,15 +41,15 @@ public class OtherPlayersStatesReceiver: MonoBehaviour {
                 po.transform.rotation = pState.Value.Rotation;
             }
             
-            if (_activePlayers < currentState._states.Count) {
-                foreach (var keyValuePair in players) {
-                    if (!currentState._states.ContainsKey(keyValuePair.Key)) {
-                        Destroy(players[keyValuePair.Key]);
-                        players.Remove(keyValuePair.Key);
-                        _activePlayers--;
-                    }
-                }
-            }
+//            if (_activePlayers < currentState._states.Count) {
+//                foreach (var keyValuePair in players) {
+//                    if (!currentState._states.ContainsKey(keyValuePair.Key)) {
+//                        Destroy(players[keyValuePair.Key]);
+//                        players.Remove(keyValuePair.Key);
+//                        _activePlayers--;
+//                    }
+//                }
+//            }
         }
     }
 
