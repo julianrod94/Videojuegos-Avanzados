@@ -4,6 +4,7 @@
         PlayerInputChannel,
         OtherPlayersChannel,
         PlayerEventChannel,
-        GrenadeStatesChannel
+        GrenadeStatesChannel,
+        KeepAliveChannel,
     }
 }

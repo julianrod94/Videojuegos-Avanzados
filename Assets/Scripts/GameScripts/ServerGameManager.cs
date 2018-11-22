@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using PackageProcessNS.KeepAliveNS;
+using ServerNS;
 using UnityEngine;
 
 public class ServerGameManager: MonoBehaviour {
@@ -20,17 +22,25 @@ public class ServerGameManager: MonoBehaviour {
         foreach (var playerId in toRespawn) {
             players[playerId].GetComponent<Health>().CurrentHealth = 3;
             players[playerId].transform.position = Vector3.zero;
-            toRespawn.Remove(playerId);
         }
+
+        if (toRespawn.Count > 0) {
+            toRespawn = new List<int>();
+        }
+
         foreach (var playerId in toRemove) {
-            Destroy( players[playerId].gameObject);
-            toRemove.Remove(playerId);
+            Destroy(players[playerId].gameObject);
             players.Remove(playerId);
+        }
+
+        if (toRemove.Count > 0) {
+            toRemove = new List<int>();
         }
     }
 
-    public void AddPlayer(GameObject player, int id) {
+    public void AddPlayer(GameObject player, int id, ChannelManager cm) {
         players.Add(id, player);
+//        ServerKeepAliveManager.Instance.AddPlayer(id, cm);
     }
 
     public void ExplodeGrenade(Vector3 position) {
