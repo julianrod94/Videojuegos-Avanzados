@@ -9,9 +9,9 @@ public class ServerGameManager: MonoBehaviour {
     
     public static ServerGameManager Instance;
     private Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
-    private List<int> toRespawn = new List<int>();
-    private List<int> toRemove = new List<int>();
-    private List<int> killed = new List<int>();
+    private HashSet<int> toRespawn = new HashSet<int>();
+    private HashSet<int> toRemove = new HashSet<int>();
+    private HashSet<int> killed = new HashSet<int>();
     private readonly float explosionRadius = 25;
     
     private void Awake() {
@@ -27,16 +27,22 @@ public class ServerGameManager: MonoBehaviour {
             }
         }
         foreach (var playerId in toRespawn) {
-            players[playerId].GetComponent<MeshRenderer>().enabled = true;
+//            players[playerId].GetComponentInChildren<RenderContainer>().renderer.SetActive(false);
             players[playerId].GetComponent<Health>().CurrentHealth = 3;
             players[playerId].transform.position = Vector3.zero;
         }
         foreach (var playerId in killed) {
-            players[playerId].GetComponent<MeshRenderer>().enabled = false;
+            if (players[playerId] == null) {
+                Debug.LogError("WTF IS NOT HERE");
+            } else {
+                //TODO
+//                Debug.Log(players[playerId].GetComponentInChildren<RenderContainer>());
+//                players[playerId].GetComponentInChildren<RenderContainer>().renderer.SetActive(false);
+            }
         }
 
         if (toRespawn.Count > 0) {
-            toRespawn = new List<int>();
+            toRespawn = new HashSet<int>();
         }
 
         foreach (var playerId in toRemove) {
@@ -45,7 +51,7 @@ public class ServerGameManager: MonoBehaviour {
         }
 
         if (toRemove.Count > 0) {
-            toRemove = new List<int>();
+            toRemove = new HashSet<int>();
         }
     }
 
@@ -73,11 +79,14 @@ public class ServerGameManager: MonoBehaviour {
     }
 
     public void RespawnPlayer(int id) {
-        if(killed.Contains(id)) killed.Remove(id);
-        toRespawn.Add(id);
+        if (IsPlayerDead(id)) { 
+            killed.Remove(id);    
+            toRespawn.Add(id);
+        }
     }
     
     public void RemovePlayer(int id) {
+        return;
         if(toRespawn.Contains(id)) toRespawn.Remove(id);
         if(killed.Contains(id)) killed.Remove(id);
         toRemove.Add(id);
