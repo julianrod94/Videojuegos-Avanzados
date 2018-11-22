@@ -48,6 +48,7 @@ public class ServerGameManager: MonoBehaviour {
         foreach (var playerId in toRemove) {
             Destroy(players[playerId].gameObject);
             players.Remove(playerId);
+            OtherPlayersStatesProvider.Instance.players.Remove(playerId);
         }
 
         if (toRemove.Count > 0) {
@@ -57,7 +58,7 @@ public class ServerGameManager: MonoBehaviour {
 
     public void AddPlayer(GameObject player, int id, ChannelManager cm) {
         players.Add(id, player);
-//        ServerKeepAliveManager.Instance.AddPlayer(id, cm);
+        ServerKeepAliveManager.Instance.AddPlayer(id, cm);
     }
 
     public void ExplodeGrenade(Vector3 position) {
@@ -86,7 +87,6 @@ public class ServerGameManager: MonoBehaviour {
     }
     
     public void RemovePlayer(int id) {
-        return;
         if(toRespawn.Contains(id)) toRespawn.Remove(id);
         if(killed.Contains(id)) killed.Remove(id);
         toRemove.Add(id);
