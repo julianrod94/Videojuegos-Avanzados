@@ -67,7 +67,7 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<PlayerPosi
             transform.position = currentState.Position;
             if (health.GetCurrentHealth() != currentState.Health)
             {
-                health.Damage(currentState.Health);
+                health.setHealth(currentState.Health);
             }
             _inputManager.EmptyUpTo(currentState.LastInputApplied);
             _lastUpdatedState = currentState;

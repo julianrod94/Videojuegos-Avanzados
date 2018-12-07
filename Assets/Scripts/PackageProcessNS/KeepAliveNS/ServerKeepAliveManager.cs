@@ -59,7 +59,7 @@ namespace PackageProcessNS.KeepAliveNS {
             
             foreach (var i in dced) {
                 RemovePlayer(i);
-                ServerGameManager.Instance.RemovePlayer(i);
+                ServerGameManager.Instance.DisconnectPlayer(i);
             }
         }
 

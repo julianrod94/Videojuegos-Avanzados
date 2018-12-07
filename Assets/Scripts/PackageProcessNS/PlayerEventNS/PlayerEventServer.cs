@@ -52,6 +52,7 @@ public class PlayerEventServer: MonoBehaviour {
     public void SetupChannels(ChannelManager cm) {
         PlayerEventChannel = new PlayerEventChannel(Process, new ReliableStrategy(0.1f,-1));
         cm.RegisterChannel((int)RegisteredChannels.PlayerEventChannel, PlayerEventChannel);
+        PlayerEventChannel.SendEvent(PlayerEvent.Connected());
     }
 
     private void OnDestroy() {

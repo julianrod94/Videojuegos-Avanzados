@@ -14,12 +14,12 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
     
     public OtherPlayersStates LastState;
     
-    public Dictionary<int, Health> players = new Dictionary<int, Health>();
+    public Dictionary<int, Health> Healths = new Dictionary<int, Health>();
     public Dictionary<int, OtherPlayersChannel> playersChannel = new Dictionary<int, OtherPlayersChannel>();
 
     public class OtherPlayersStatesBridge: IUnityBridgeState<OtherPlayersStates> {
 
-        private int _playerTarget;
+        private readonly int _playerTarget;
 
         public OtherPlayersStatesBridge(int target) {
             _playerTarget = target;
@@ -42,46 +42,42 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
         Instance = this;
     }
 
-    public int AddPlayer(Health health, ChannelManager cm) {
+    public void AddPlayer(int id, Health health, ChannelManager cm) {
         lock (this) {
             //TODO Whathappens if many discconect and reconnect
-            var id = players.Count;
             var channel = new OtherPlayersChannel(
                 new OtherPlayersStatesBridge(id),
                 new TrivialStrategy(),
                 0.1f);
 
             playersChannel[id] = channel;
-            players[id] = health;
-            Debug.Log("Players connected  " + players.Count);
-            cm.RegisterChannel((int)RegisteredChannels.OtherPlayersChannel, channel);
+            Healths[id] = health;
+            Debug.Log("Players connected  " + Healths.Count);
             
+            cm.RegisterChannel((int)RegisteredChannels.OtherPlayersChannel, channel);
             channel.StartSending();
-
-            return id;
         }
     }
 
-
-    public void DamagePlayer(int id)
-    {
-        Health playerHealth = players[id];
-        playerHealth.Damage(playerHealth.GetCurrentHealth() - 1);
-        if(playerHealth.GetCurrentHealth() <= 0) ServerGameManager.Instance.KillPlayer(id);
+    public void DamagePlayer(int id) {
+        Health playerHealth = Healths[id];
+        playerHealth.Damage();
     }
     
     private void FixedUpdate() {
         var newDict = new Dictionary<int, OtherPlayerState>();
-        foreach (var keyValuePair in players) {
+        foreach (var keyValuePair in Healths) {
             var po = keyValuePair.Value;
-            
             newDict[keyValuePair.Key] = new OtherPlayerState(po.transform.position, po.transform.rotation);
-            if (po.GetComponent<Health>().GetCurrentHealth() <= 0) {
-                ServerGameManager.Instance.KillPlayer(keyValuePair.Key);
-            }
         }
         
         LastState = new OtherPlayersStates(Time.time, newDict);
+    }
+
+    public void DisconnectPlayer(int id) {
+        playersChannel[id].Dispose();
+        playersChannel.Remove(id);
+        Healths.Remove(id);
     }
 
     private void OnDestroy() {

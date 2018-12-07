@@ -33,16 +33,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void Respawn() {
-//		Player.GetComponent<Health>().CurrentHealth = 3;
 		Player.transform.position = Vector3.zero;
 		PlayerEventClient.Instance.PlayerEventChannel.SendEvent(PlayerEvent.Respawn());
-//		GetComponent<CanvasManager>().ShowHp();
 	}
 
 	private void Update() {
 		Player.SetActive(isActive);
 		if(Input.GetKeyDown(KeyCode.R) && _health.GetCurrentHealth() <= 0) {
-			Debug.Log("adsadas");
 			Respawn();
 		}
 	}

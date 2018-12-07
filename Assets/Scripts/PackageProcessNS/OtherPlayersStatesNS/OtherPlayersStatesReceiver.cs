@@ -9,13 +9,11 @@ using UnityEngine;
 public class OtherPlayersStatesReceiver: MonoBehaviour {
 
     public GameObject otherPlayerPrefab;
-    private int _activePlayers = 0;
     public Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
     private OtherPlayersChannel _channel;
 
     public void AddPlayer(int id, Vector3 position) {
         GameObject go = Instantiate(otherPlayerPrefab);
-        _activePlayers++;
         go.GetComponent<OtherPlayer>().id = id;
         go.transform.position = position;
         players[id] = go;
@@ -36,18 +34,16 @@ public class OtherPlayersStatesReceiver: MonoBehaviour {
                 if (!players.ContainsKey(pState.Key)) {
                     AddPlayer(pState.Key, pState.Value.Position);
                 }
+                
                 var po = players[pState.Key];
                 po.transform.position = pState.Value.Position;
                 po.transform.rotation = pState.Value.Rotation;
             }
             
-            if (_activePlayers < currentState._states.Count) {
-                foreach (var keyValuePair in players) {
-                    if (!currentState._states.ContainsKey(keyValuePair.Key)) {
-                        Destroy(players[keyValuePair.Key]);
-                        players.Remove(keyValuePair.Key);
-                        _activePlayers--;
-                    }
+            foreach (var keyValuePair in players) {
+                if (!currentState._states.ContainsKey(keyValuePair.Key)) {
+                    Destroy(players[keyValuePair.Key]);
+                    players.Remove(keyValuePair.Key);
                 }
             }
         }

@@ -32,9 +32,12 @@ public class ServerConnectionManager : MonoBehaviour {
     
     public int Port;
     private Server server;
+    
+    private readonly Dictionary<int, Connection> _connectionsInfo = new Dictionary<int, Connection>();
     private readonly Dictionary<Connection, ChannelManager> _clients = new Dictionary<Connection, ChannelManager>();
     private readonly Dictionary<int, ChannelManager> _conections = new Dictionary<int, ChannelManager>();
-    public int initializedPlayers = 0;
+    public int connectedNonce = 0;
+    public int initializedNonce = 0;
     
     private void Awake() {
         if (Instance == null) {
@@ -57,26 +60,41 @@ public class ServerConnectionManager : MonoBehaviour {
 
     private void addNewClient(Connection connection) {
         ChannelManager newCM = new ChannelManager(server, connection.Ip, connection.Port);
-        _conections.Add(_clients.Count, newCM);
+        _conections.Add(connectedNonce, newCM);
+        _connectionsInfo.Add(connectedNonce, connection);
         _clients.Add(connection, newCM);
+        connectedNonce++;
     }
 
     private void FixedUpdate() {
         CurrentTime.Time = Time.time;
-        while (initializedPlayers < _clients.Count) {
-            var cm = _conections[initializedPlayers];
+        while (initializedNonce < connectedNonce) {
+            var id = initializedNonce;
+            
+            var cm = _conections[id];
             var newPlayer = Instantiate(playerPrefab);
             var health = newPlayer.GetComponent<Health>();
-            var id = OtherPlayersStatesProvider.Instance.AddPlayer(health, cm);
-            newPlayer.GetComponent<OtherPlayer>().id = id;
-            newPlayer.GetComponent<PlayerMovementProvider>().SetupChannels(cm);
+            
+            OtherPlayersStatesProvider.Instance.AddPlayer(id, health, cm);
             GrenadeStatesProvider.Instance.SetupChannel(id, cm);
             ServerGameManager.Instance.AddPlayer(newPlayer, id, cm);
-            var pEvent = newPlayer.GetComponent<PlayerEventServer>();
-            pEvent.SetupChannels(cm);
-            initializedPlayers++;
-            pEvent.PlayerEventChannel.SendEvent(PlayerEvent.Connected());
+
+            newPlayer.GetComponent<PlayerMovementProvider>().SetupChannels(cm);
+            newPlayer.GetComponent<OtherPlayer>().id = id;
+            newPlayer.GetComponent<PlayerEventServer>().SetupChannels(cm);
+            
+            initializedNonce++;
         }
+    }
+
+    public void RemovePlayer(int id) {
+        OtherPlayersStatesProvider.Instance.DisconnectPlayer(id);
+        GrenadeStatesProvider.Instance.DisconnectPlayer(id);
+        
+        _conections.Remove(id);
+        var connection = _connectionsInfo[id];
+        _connectionsInfo.Remove(id);
+        _clients.Remove(connection);
     }
 
     private void OnDestroy() {

@@ -11,16 +11,13 @@ public class ConnectionSettings : MonoBehaviour {
 	[Range(0, 100)]
 	public float PacketLoss;
 
+	public bool Predict;
+
 	private void Awake() {
 		if (Instance == null) {
 			Instance = this;
 		} else {
 			Destroy(this);
 		}
-	}
-
-	private void Update() {
-//		Latency += (int)(Time.deltaTime * 300f);
-//		Latency %= 1000;
 	}
 }

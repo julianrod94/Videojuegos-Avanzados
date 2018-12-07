@@ -3,17 +3,15 @@
 namespace GameScripts {
     public class GrenadeBehaviour: MonoBehaviour {
         public bool isExploding;
-        public ParticleSystem explosion;
+        public ParticleSystem explosionPrefab;
         public ParticleSystem _explosion;
         private bool exploded;
-        private float timeSinceExplotion;
 
         private void Update() {
             if (!exploded && isExploding) {
-                _explosion = Instantiate(explosion, transform.position, Quaternion.identity);
+                _explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
                 GetComponent<MeshRenderer>().enabled = false;
                 exploded = true;
-                timeSinceExplotion = Time.time;
             }
         }
 

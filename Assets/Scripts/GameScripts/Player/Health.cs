@@ -7,19 +7,25 @@ public class Health : MonoBehaviour
 
 	public int CurrentHealth;
 
-	private void Awake()
-	{
+	private void Awake() {
 		CurrentHealth = 3;
 	}
 
-	public void Damage(int currentHealth)
-	{
+	
+	public void Damage() {
+		CurrentHealth--;
+		CurrentHealth = CurrentHealth >= 0 ? CurrentHealth : 0;
+	}
+	public void setHealth(int currentHealth) {
 		CurrentHealth = currentHealth >= 0 ? currentHealth : 0;
-		
 	}
 
-	public int GetCurrentHealth()
-	{
+	public int GetCurrentHealth() {
 		return CurrentHealth;
+	}
+
+	public void Respawn() {
+		transform.position = Vector3.zero;
+		CurrentHealth = 3;
 	}
 }

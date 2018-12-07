@@ -6,11 +6,11 @@ using UnityEngine;
 
 public class ServerGameManager: MonoBehaviour {
     
-    
     public static ServerGameManager Instance;
     private Dictionary<int, GameObject> players = new Dictionary<int, GameObject>();
+    
     private HashSet<int> toRespawn = new HashSet<int>();
-    private HashSet<int> toRemove = new HashSet<int>();
+    private HashSet<int> toDisconnect = new HashSet<int>();
     private HashSet<int> killed = new HashSet<int>();
     private readonly float explosionRadius = 25;
     
@@ -21,38 +21,32 @@ public class ServerGameManager: MonoBehaviour {
     }
 
     private void Update() {
-        foreach (var player in players.Keys) {
-            if (players[player].GetComponent<Health>().GetCurrentHealth() <= 0) {
-                
-            }
+        foreach (var playerId in toDisconnect) {
+            if (toRespawn.Contains(playerId)) toRespawn.Remove(playerId);
+            if (killed.Contains(playerId)) killed.Remove(playerId);
+            Destroy(players[playerId]);
+            players.Remove(playerId);
+            ServerConnectionManager.Instance.RemovePlayer(playerId);
         }
+        
+        //Empty toRespawn
+        if (toDisconnect.Count > 0) {
+            toDisconnect = new HashSet<int>();
+        }
+        
         foreach (var playerId in toRespawn) {
-//            players[playerId].GetComponentInChildren<RenderContainer>().renderer.SetActive(false);
-            players[playerId].GetComponent<Health>().CurrentHealth = 3;
-            players[playerId].transform.position = Vector3.zero;
+            players[playerId].GetComponent<Health>().Respawn();
         }
-        foreach (var playerId in killed) {
-            if (players[playerId] == null) {
-                Debug.LogError("WTF IS NOT HERE");
-            } else {
-                //TODO
-//                Debug.Log(players[playerId].GetComponentInChildren<RenderContainer>());
-//                players[playerId].GetComponentInChildren<RenderContainer>().renderer.SetActive(false);
-            }
-        }
-
+        
+        //Empty toRespawn
         if (toRespawn.Count > 0) {
             toRespawn = new HashSet<int>();
         }
 
+        var toRemove = players.Where((p) => p.Value.GetComponent<Health>().CurrentHealth <= 0);
+        
         foreach (var playerId in toRemove) {
-            Destroy(players[playerId].gameObject);
-            players.Remove(playerId);
-            OtherPlayersStatesProvider.Instance.players.Remove(playerId);
-        }
-
-        if (toRemove.Count > 0) {
-            toRemove = new HashSet<int>();
+            KillPlayer(playerId.Key);
         }
     }
 
@@ -64,9 +58,7 @@ public class ServerGameManager: MonoBehaviour {
     public void ExplodeGrenade(Vector3 position) {
         foreach (var player in players.Keys) {
             if (Vector3.Distance(players[player].transform.position, position) < explosionRadius) {
-                var health = players[player].GetComponent<Health>();
-                health.Damage(health.CurrentHealth - 1);
-                if(health.GetCurrentHealth() <= 0) KillPlayer(player);
+                players[player].GetComponent<Health>().Damage();
             }
         }
     }
@@ -75,8 +67,11 @@ public class ServerGameManager: MonoBehaviour {
         return killed.Contains(id);
     }
 
-    public void KillPlayer(int id) {
+    private void KillPlayer(int id) {
         killed.Add(id);
+        Destroy(players[id].gameObject);
+        players.Remove(id);
+        OtherPlayersStatesProvider.Instance.Healths.Remove(id);
     }
 
     public void RespawnPlayer(int id) {
@@ -86,9 +81,7 @@ public class ServerGameManager: MonoBehaviour {
         }
     }
     
-    public void RemovePlayer(int id) {
-        if(toRespawn.Contains(id)) toRespawn.Remove(id);
-        if(killed.Contains(id)) killed.Remove(id);
-        toRemove.Add(id);
+    public void DisconnectPlayer(int id) {
+        toDisconnect.Add(id);
     }
 }
