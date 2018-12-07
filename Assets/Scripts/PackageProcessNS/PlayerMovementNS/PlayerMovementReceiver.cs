@@ -74,7 +74,10 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<PlayerPosi
         } else {
             transform.position = _lastUpdatedState.Position;
         }
-        Predict();
+
+        if (ClientConnectionManager.Instance.isPredicting) {
+            Predict();
+        }
     }
 
     private void Predict() {

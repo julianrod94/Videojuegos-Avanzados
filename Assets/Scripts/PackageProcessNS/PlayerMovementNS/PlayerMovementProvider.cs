@@ -48,12 +48,16 @@ public class PlayerMovementProvider: MonoBehaviour, IUnityBridgeState<PlayerPosi
     private void FixedUpdate() {
         lock (_inputManager) {
             foreach (var playerAction in _inputManager.Inputs()) {
-                if(!ServerGameManager.Instance.IsPlayerDead(GetComponent<OtherPlayer>().id))_lastAppliedInput = PlayerInput.ApplyInput(gameObject, playerAction);
+                if(!ServerGameManager.Instance.IsPlayerDead(GetComponent<OtherPlayer>().id)) {
+                    _lastAppliedInput = PlayerInput.ApplyInput(gameObject, playerAction);
+                }
             }
+            _inputManager.EmptyAll(_lastAppliedInput);
+            LastState = new PlayerPosition(Time.time, transform.position, _lastAppliedInput, GetComponent <Health> ().GetCurrentHealth());
         }
         
-        _inputManager.EmptyAll(_lastAppliedInput);
-        LastState = new PlayerPosition(Time.time, transform.position, _lastAppliedInput, GetComponent <Health> ().GetCurrentHealth());
+       
+        
     }
 
     private void OnDestroy() {

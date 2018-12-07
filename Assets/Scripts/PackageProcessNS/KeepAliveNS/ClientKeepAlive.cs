@@ -20,6 +20,7 @@ namespace PackageProcessNS.KeepAliveNS {
 
         IEnumerator SendKeepAlive() {
             while (true) {
+                Debug.Log("SEND KEEP ALIVE");
                 _channel.SendEvent(true);
                 yield return new WaitForSeconds(1);
             }

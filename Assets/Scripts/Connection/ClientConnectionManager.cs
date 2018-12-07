@@ -23,6 +23,8 @@ public class ClientConnectionManager : MonoBehaviour {
     
     [Range(0,1000)]
     public float Latency = 0;
+
+    public bool isPredicting;
     
     private void Awake() {
         if (Instance == null) {
