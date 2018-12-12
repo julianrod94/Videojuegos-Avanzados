@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using ChannelNS;
 using SenderStrategyNS;
@@ -39,13 +41,14 @@ public class OtherPlayersStatesReceiver: MonoBehaviour {
                 po.transform.position = pState.Value.Position;
                 po.transform.rotation = pState.Value.Rotation;
             }
+
+
+            var toRemove = players.Where((kv) => !currentState._states.ContainsKey(kv.Key)).ToList();
             
-            foreach (var keyValuePair in players) {
-                if (!currentState._states.ContainsKey(keyValuePair.Key)) {
-                    Destroy(players[keyValuePair.Key]);
-                    players.Remove(keyValuePair.Key);
-                }
-            }
+            toRemove.ForEach((kv) => {
+                Destroy(players[kv.Key]);
+                players.Remove(kv.Key);
+            });
         }
     }
 

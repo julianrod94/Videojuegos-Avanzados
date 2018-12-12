@@ -24,7 +24,7 @@ public class ServerGameManager: MonoBehaviour {
         foreach (var playerId in toDisconnect) {
             if (toRespawn.Contains(playerId)) toRespawn.Remove(playerId);
             if (killed.Contains(playerId)) killed.Remove(playerId);
-            Destroy(players[playerId]);
+            if (players.ContainsKey(playerId)) Destroy(players[playerId]);
             players.Remove(playerId);
             ServerConnectionManager.Instance.RemovePlayer(playerId);
         }
@@ -43,7 +43,7 @@ public class ServerGameManager: MonoBehaviour {
             toRespawn = new HashSet<int>();
         }
 
-        var toRemove = players.Where((p) => p.Value.GetComponent<Health>().CurrentHealth <= 0);
+        var toRemove = players.Where((p) => p.Value.GetComponent<Health>().CurrentHealth <= 0).ToList();
         
         foreach (var playerId in toRemove) {
             KillPlayer(playerId.Key);
