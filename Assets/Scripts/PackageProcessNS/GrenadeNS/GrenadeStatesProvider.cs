@@ -48,13 +48,17 @@ public class GrenadeStatesProvider: MonoBehaviour, IUnityBridgeState<GrenadesSta
     private void FixedUpdate() {
         while (_toInstantiate.Count > 0) {
             var conditions = _toInstantiate.Dequeue();
-            var newGrenade = Instantiate(grenadePrefab, 
-                OtherPlayersStatesProvider.Instance.Healths[conditions.PlayerId].gameObject.GetComponentInChildren<GrenadeOrigin>()
-                .transform.position,
-                conditions.rotation);
-            
-            newGrenade.GetComponent<Rigidbody>().AddForce(newGrenade.transform.forward * 25, ForceMode.Impulse);
-            grenades[grenadeCount++] = newGrenade.GetComponent<ServerGrenadeBehaviour>();
+            var healths = OtherPlayersStatesProvider.Instance.Healths;
+            if (healths.ContainsKey(conditions.PlayerId) && healths[conditions.PlayerId].CurrentHealth > 0) {
+                var newGrenade = Instantiate(grenadePrefab,
+                    OtherPlayersStatesProvider.Instance.Healths[conditions.PlayerId].gameObject
+                        .GetComponentInChildren<GrenadeOrigin>()
+                        .transform.position,
+                    conditions.rotation);
+
+                newGrenade.GetComponent<Rigidbody>().AddForce(newGrenade.transform.forward * 25, ForceMode.Impulse);
+                grenades[grenadeCount++] = newGrenade.GetComponent<ServerGrenadeBehaviour>();
+            }
         }
         
         var newDict = new Dictionary<int, GrenadeState>();
