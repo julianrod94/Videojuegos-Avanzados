@@ -61,16 +61,17 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<PlayerPosi
        _positionChannel.Interpolator.Update(Time.deltaTime);
         currentState = _positionChannel.Interpolator.PastState;
         
-        if (currentState != null)
-        {
+        if (currentState != null) {
             Health health = GetComponent<Health>();
             transform.position = currentState.Position;
-            if (health.GetCurrentHealth() != currentState.Health)
-            {
+            if (health.GetCurrentHealth() != currentState.Health) {
                 health.setHealth(currentState.Health);
             }
             _inputManager.EmptyUpTo(currentState.LastInputApplied);
             _lastUpdatedState = currentState;
+            if (_inputManager.Count() > 200) {
+                _inputManager.EmptyAll(currentState.LastInputApplied);
+            }
         } else {
             transform.position = _lastUpdatedState.Position;
         }
