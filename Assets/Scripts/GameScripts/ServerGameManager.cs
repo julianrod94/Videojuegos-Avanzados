@@ -24,7 +24,7 @@ public class ServerGameManager: MonoBehaviour {
         foreach (var playerId in toDisconnect) {
             if (toRespawn.Contains(playerId)) toRespawn.Remove(playerId);
             if (killed.Contains(playerId)) killed.Remove(playerId);
-            if (players.ContainsKey(playerId)) Destroy(players[playerId]);
+            Destroy(players[playerId]);
             players.Remove(playerId);
             ServerConnectionManager.Instance.RemovePlayer(playerId);
         }
@@ -35,7 +35,8 @@ public class ServerGameManager: MonoBehaviour {
         }
         
         foreach (var playerId in toRespawn) {
-            players[playerId].GetComponent<Health>().Respawn();
+            var health = players[playerId].GetComponent<Health>();
+            health.Respawn();
         }
         
         //Empty toRespawn
@@ -69,9 +70,6 @@ public class ServerGameManager: MonoBehaviour {
 
     private void KillPlayer(int id) {
         killed.Add(id);
-        Destroy(players[id].gameObject);
-        players.Remove(id);
-        OtherPlayersStatesProvider.Instance.Healths.Remove(id);
     }
 
     public void RespawnPlayer(int id) {

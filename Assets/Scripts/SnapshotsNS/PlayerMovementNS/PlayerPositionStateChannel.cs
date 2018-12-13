@@ -10,8 +10,8 @@ namespace SnapshotsNS.PlayerMovementNS {
 
         private readonly IUnityBridgeState<PlayerPosition> _bridge;
         
-        private readonly float _positionMax = 100;
-        private readonly float _positionMin = -100;
+        private readonly float _positionMax = 120;
+        private readonly float _positionMin = -120;
         private readonly float _positionPrecision = 0.001f;
 
         private readonly float _timeStampMin = 0;

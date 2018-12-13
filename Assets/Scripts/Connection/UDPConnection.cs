@@ -26,7 +26,7 @@ public abstract class UDPConnection {
             } catch (ThreadAbortException abort) {
                 throw abort;
             } catch (Exception err) {
-                Debug.Log(err);
+                Debug.LogError(err);
             }
         }
         

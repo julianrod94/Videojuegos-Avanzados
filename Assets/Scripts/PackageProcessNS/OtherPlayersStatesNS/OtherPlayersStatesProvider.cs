@@ -67,10 +67,13 @@ public class OtherPlayersStatesProvider: MonoBehaviour {
     private void FixedUpdate() {
         var newDict = new Dictionary<int, OtherPlayerState>();
         foreach (var keyValuePair in Healths) {
-            var po = keyValuePair.Value;
-            newDict[keyValuePair.Key] = new OtherPlayerState(po.transform.position, po.transform.rotation);
+            if (keyValuePair.Value.CurrentHealth > 0) {
+                var po = keyValuePair.Value;
+                newDict[keyValuePair.Key] = new OtherPlayerState(po.transform.position, po.transform.rotation);
+            }
         }
-        
+
+        Debug.Log("THERE ARE HEALTH: " + newDict.Count);
         LastState = new OtherPlayersStates(Time.time, newDict);
     }
 

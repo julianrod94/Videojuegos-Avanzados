@@ -10,6 +10,7 @@ using Utils;
 
 namespace PackageProcessNS.KeepAliveNS {
     public class ServerKeepAliveManager: MonoBehaviour {
+        
         Dictionary<int, KeepAliveChannel> _keepAlives = new Dictionary<int, KeepAliveChannel>();
         Dictionary<int, float> _lastKeepAlives = new Dictionary<int, float>();
 
@@ -53,6 +54,7 @@ namespace PackageProcessNS.KeepAliveNS {
             var dced = new List<int>();
             foreach (var lastKeepAlive in _lastKeepAlives) {
                 if (CurrentTime.Time- lastKeepAlive.Value > 5) {
+                    Debug.LogError("PLAYER " + lastKeepAlive.Key + "WAS DISCONECTED");
                     dced.Add(lastKeepAlive.Key);
                 }
             }
