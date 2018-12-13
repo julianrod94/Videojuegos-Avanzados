@@ -18,6 +18,7 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<PlayerPosi
     
     private PlayerPosition currentState;
     private PlayerPosition _lastUpdatedState;
+    private Health health;
 
     public PlayerPosition GetCurrentState() {
         return currentState;
@@ -31,38 +32,40 @@ public class PlayerMovementReceiver: MonoBehaviour, IUnityBridgeState<PlayerPosi
         ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerPositionChannel, _positionChannel);
         ClientConnectionManager.Instance.ChannelManager.RegisterChannel((int)RegisteredChannels.PlayerInputChannel, _inputChannel);
         GetComponent <Rigidbody> ().constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; 
+        health = GetComponent<Health>();
     }
 
     // Update is called once per frame
     private void Update() {
-        if (Input.GetKey(KeyCode.A)) {
-            _inputManager.SubmitInput(InputEnum.Left, transform.rotation);
-        }
-		
-		
-        if (Input.GetKey(KeyCode.W)) {
-            _inputManager.SubmitInput(InputEnum.Forward, transform.rotation);
-        }
-		
-		
-        if (Input.GetKey(KeyCode.D)) {
-            _inputManager.SubmitInput(InputEnum.Right, transform.rotation);
-        }
-		
-		
-        if (Input.GetKey(KeyCode.S)) {
-            _inputManager.SubmitInput(InputEnum.Back, transform.rotation);
+        if (health.GetCurrentHealth() > 0) {
+            if (Input.GetKey(KeyCode.A)) {
+                _inputManager.SubmitInput(InputEnum.Left, transform.rotation);
+            }
+
+
+            if (Input.GetKey(KeyCode.W)) {
+                _inputManager.SubmitInput(InputEnum.Forward, transform.rotation);
+            }
+
+
+            if (Input.GetKey(KeyCode.D)) {
+                _inputManager.SubmitInput(InputEnum.Right, transform.rotation);
+            }
+
+
+            if (Input.GetKey(KeyCode.S)) {
+                _inputManager.SubmitInput(InputEnum.Back, transform.rotation);
+            }
+
+            if (_inputManager.Count() > 0) {
+                _inputChannel.SendEvent(_inputManager.Inputs());
+            }
         }
 
-        if (_inputManager.Count() > 0) {
-            _inputChannel.SendEvent(_inputManager.Inputs());
-        }
-
-       _positionChannel.Interpolator.Update(Time.deltaTime);
+        _positionChannel.Interpolator.Update(Time.deltaTime);
         currentState = _positionChannel.Interpolator.PastState;
         
         if (currentState != null) {
-            Health health = GetComponent<Health>();
             transform.position = currentState.Position;
             if (health.GetCurrentHealth() != currentState.Health) {
                 health.setHealth(currentState.Health);
